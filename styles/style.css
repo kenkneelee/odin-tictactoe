@@ -1,0 +1,21 @@
+.board {
+    display:grid;
+    grid-template-columns: repeat(3,minmax(25vw,1fr));
+    grid-template-rows: repeat(3,minmax(25vh,1fr));
+    padding:20px;
+    background-color: aliceblue;
+    font-size:40px;
+}
+
+.cell {
+    border: 2px solid;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header, footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
