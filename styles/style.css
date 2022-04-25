@@ -5,49 +5,54 @@
 
 html {
     height:100%;
-    width:100%;
+    font-family: 'Permanent Marker', cursive;
+    font-size: clamp(14px, 1.5vw, 40px);
 }
 
 body {
+    text-align: center;
     display:flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    min-height:100%;
-    max-width:100%;
     background-image: url("https://i.pinimg.com/originals/fb/a7/e9/fba7e90aae11ba301fe88f9da2a35875.jpg");
     background-size:contain;
     background-attachment: fixed;
+    height:100%;
 }
 
 main {
-    width:100%;
+    flex-grow:1;
     display:flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
 .board {
     display:grid;
     grid-template-columns: repeat(3,auto);
     grid-template-rows: repeat(3,auto);
-    padding: 5%;
-    font-size:40px;
+    padding: 2rem;
+    font-size:4rem;
     background-color: rgba(0, 174, 255, 0.125);  
     backdrop-filter: blur(5px);
     border-radius: 40px;
     color:aliceblue;
-    width:60%;
+    width: 60vw;
+    flex-grow:0.5;
 }
-
-
 
 .cell {
     border: 2px solid;
     display:flex;
     justify-content: center;
     align-items: center;
-    padding:3rem;
+    font-size: clamp(1rem, 15vw, 4rem);
+}
+
+button {
+    display:none;
 }
 
 header, footer {
@@ -59,10 +64,20 @@ header, footer {
     width:50%;
 }
 
+header {
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
 h1 {
-    margin:5% 0;
+    padding: 2rem;
+}
+
+footer {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
 }
 
 p {
-    margin: 5% 0;
+    padding: 1rem;
 }
