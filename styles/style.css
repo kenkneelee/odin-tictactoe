@@ -39,12 +39,12 @@ main {
     backdrop-filter: blur(5px);
     border-radius: 40px;
     color:aliceblue;
-    width: 60vw;
-    flex-grow:0.5;
+    width: 80vw;
+    height: 80vw;
 }
 
 .cell {
-    border: 2px solid;
+    border: 3px solid;
     display:flex;
     justify-content: center;
     align-items: center;
@@ -80,4 +80,11 @@ footer {
 
 p {
     padding: 1rem;
+}
+
+@media (min-width:1080px) {
+    .board {
+        height: 30vw;
+        width: 30vw;
+    }
 }
