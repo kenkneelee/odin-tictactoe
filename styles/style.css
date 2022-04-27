@@ -31,8 +31,8 @@ main {
 
 .board {
     display:grid;
-    grid-template-columns: repeat(3,auto);
-    grid-template-rows: repeat(3,auto);
+    grid-template-columns: repeat(3,calc(100%/3));
+    grid-template-rows: repeat(3,calc(100%/3));
     padding: 2rem;
     font-size:4rem;
     background-color: rgba(0, 174, 255, 0.125);  
