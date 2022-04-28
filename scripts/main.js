@@ -37,8 +37,20 @@
 //   calculator.add(3,5); // 8
 const game = (() => {
     let turn = true;
+    const headertest = document.querySelector("header");
+    const switchTurn = function() {
+        if (this.turn == true) {
+            this.turn = false;
+            headertest.textContent = "Player 1's turn";
+        }
+        else {
+            this.turn = true;
+            headertest.textContent = "Player 2's turn";
+        }
+    }
     return {
         turn,
+        switchTurn,
     };
 })();
 
@@ -54,11 +66,11 @@ const gameBoard = (() => {
         cell.addEventListener("click", () => {
             if (game.turn == true && cell.textContent=="") {
             cell.textContent = "X";
-            game.turn = false;
+            game.switchTurn();
             }
             else if (game.turn == false && cell.textContent=="") {
             cell.textContent = "O";
-            game.turn = true;
+            game.switchTurn();
             }
         });
          
