@@ -36,7 +36,7 @@
 
 //   calculator.add(3,5); // 8
 const game = (() => {
-    // keep track of who's turn it is
+    // keep track of whose turn it is
     let turn = true;
     const headertest = document.querySelector("h1");
     const switchTurn = function () {
@@ -65,24 +65,17 @@ const game = (() => {
             [1, 5, 9],
             [3, 5, 7],
         ];
+
+        let checker = (playerTotal, winner) =>
+        winner.every((value) => playerTotal.includes(value));
+        
         // for every winning combo,
         for (let i = 0; i < winningCombos.length; i++) {
-            // for every cell in the winning combo
-                const winner = winningCombos[i];
-                console.log ("Checking winning numbers "  + winner)
-                let checker = (playerTotal, winner) => winner.every(v => playerTotal.includes(v));
-                console.log("Player score is " + gameBoard.playerTotal.map(Number));
-                console.log(checker(gameBoard.playerTotal.map(Number), winner));
-                // let array1 = [1,2,3],
-                // array2 = [1,2,3,4],
-                // array3 = [1,2];
-                // let checker = (arr, target) => target.every(v => arr.includes(v));
-                // console.log(checker(array2, array1));  // true
-                // console.log(checker(array3, array1));  // false
-
-            // const checkWin = function {
-            //     if player1total.contains()
-            // }
+            const winner = winningCombos[i];
+            // use checker function to compare current winning number set to player total
+            if (checker(gameBoard.playerTotal.map(Number), winner)) {
+                console.log("You win!");
+            }
         }
     };
 
@@ -111,7 +104,7 @@ const gameBoard = (() => {
                 console.log(cell.id);
                 playerTotal.push(cell.id);
                 console.log(playerTotal);
-                game.checkWin()
+                game.checkWin();
                 game.switchTurn();
             } else if (game.turn == false && cell.textContent == "") {
                 cell.textContent = "O";
@@ -122,21 +115,26 @@ const gameBoard = (() => {
     });
     return {
         startBoard,
-        playerTotal
+        playerTotal,
     };
 })();
 
 //player FACTORY
 const playerFactory = function (name, sign) {
     const sayHello = function () {
-        console.log("hello!");
+        console.log("Hello! I am " + name + ".");
     };
-    return { name, sign, sayHello };
+    this.score = [];
+    return { name, sign, score, sayHello };
 };
 
-const jeff = playerFactory("jeff", "x");
-console.log(jeff.name);
-jeff.sayHello();
+const human = playerFactory("Human", "X");
+console.log(human.name);
+human.sayHello();
+
+const ai = playerFactory ("AI", "O");
+console.log(ai.name);
+ai.sayHello();
 
 // game object
 
