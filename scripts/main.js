@@ -71,14 +71,20 @@ const game = (() => {
             const winner = winningCombos[i];
             const humanScore = human.total.map(Number);
             const aiScore = ai.total.map(Number);
+            const modal = document.getElementById("outcomeModal");
+            let gameWinner = document.getElementById("winner");
 
             if (checker(humanScore, winner)) {
                 console.log("Human wins!");
                 human.sayHello();
+                gameWinner.textContent = "Human";
+                modal.style.display = "block";
             }
             if (checker(aiScore, winner)) {
                 console.log("AI wins!");
+                gameWinner.textContent = "AI";
                 ai.sayHello();
+                modal.style.display = "block";
             }
         }
     };
@@ -113,7 +119,7 @@ const gameBoard = (() => {
         });
     });
 
-    const newGame = function () {
+    const newBoard = function () {
         cells.forEach((cell) => {
             cell.textContent = "";
         });
@@ -123,12 +129,14 @@ const gameBoard = (() => {
     };
 
     const replay = document.querySelector(".replay");
+    const modal = document.getElementById("outcomeModal");
+
     replay.addEventListener("click", () => {
-        newGame();
+        newBoard();
+        modal.style.display = "none";
     });
 
-    return {
-    };
+    return {};
 })();
 
 //player FACTORY
