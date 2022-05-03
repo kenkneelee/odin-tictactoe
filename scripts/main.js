@@ -36,21 +36,29 @@
 
 //   calculator.add(3,5); // 8
 
+// game = object IIFE
+
+// gameBoard = module
+
+// displayController = module
+
+// mePlayer = factory
+
 const game = (() => {
     // keep track of whose turn it is
     let turn = true;
-    const headertest = document.querySelector("h1");
+    const header = document.querySelector("h1");
     const switchTurn = function () {
         if (this.turn == true) {
             this.turn = false;
-            headertest.textContent = "Player 2's turn";
+            header.textContent = "Player 2's turn";
         } else {
             this.turn = true;
-            headertest.textContent = "Player 1's turn";
+            header.textContent = "Player 1's turn";
         }
     };
 
-    // check for a game winner
+    // check for a game winner, enable resetting game
     const checkWin = function () {
         const winningCombos = [
             [1, 2, 3],
@@ -62,18 +70,20 @@ const game = (() => {
             [1, 5, 9],
             [3, 5, 7],
         ];
+        const modal = document.getElementById("outcomeModal");
+        const modalContent = document.querySelector(".modal-content");
+        const gameWinner = document.getElementById("winner");
+        const replay = document.querySelector(".replay");
 
-        let checker = (playerTotal, winner) =>
+        // checker function to check a player total against a specific winning combo
+        const checker = (playerTotal, winner) =>
             winner.every((value) => playerTotal.includes(value));
 
-        // for every winning combo, check if the player's total matches it
+        // use checker function to compare player totals to all winning combos
         for (let i = 0; i < winningCombos.length; i++) {
             const winner = winningCombos[i];
             const humanScore = human.total.map(Number);
             const aiScore = ai.total.map(Number);
-            const modal = document.getElementById("outcomeModal");
-            const modalContent = document.querySelector(".modal-content");
-            let gameWinner = document.getElementById("winner");
 
             if (checker(humanScore, winner)) {
                 console.log("Human wins!");
@@ -86,9 +96,19 @@ const game = (() => {
                 console.log("AI wins!");
                 gameWinner.textContent = "AI";
                 ai.sayHello();
+                modalContent.classList.add("modal-content-active");
                 modal.style.display = "block";
             }
         }
+
+        // reset game
+        replay.addEventListener("click", () => {
+            gameBoard.newBoard();
+            human.total = [];
+            ai.total = [];
+            game.turn = true;
+            modal.style.display = "none";
+        });
     };
 
     // return
@@ -102,6 +122,11 @@ const game = (() => {
 //gameboard MODULE
 const gameBoard = (() => {
     const cells = document.querySelectorAll(".cell");
+    const newBoard = function () {
+        cells.forEach((cell) => {
+            cell.textContent = "";
+        });
+    };
 
     cells.forEach((cell) => {
         cell.addEventListener("click", () => {
@@ -121,24 +146,9 @@ const gameBoard = (() => {
         });
     });
 
-    const newBoard = function () {
-        cells.forEach((cell) => {
-            cell.textContent = "";
-        });
-        human.total = [];
-        ai.total = [];
-        game.turn = true;
+    return {
+        newBoard,
     };
-
-    const replay = document.querySelector(".replay");
-    const modal = document.getElementById("outcomeModal");
-
-    replay.addEventListener("click", () => {
-        newBoard();
-        modal.style.display = "none";
-    });
-
-    return {};
 })();
 
 //player FACTORY
@@ -150,13 +160,7 @@ const playerFactory = function (name, sign) {
     return { name, sign, total, sayHello };
 };
 
+// Create player objects
+
 const human = playerFactory("Human", "X");
 const ai = playerFactory("AI", "O");
-
-// game object
-
-// gameBoard = module
-
-// displayController = module
-
-// mePlayer = factory
