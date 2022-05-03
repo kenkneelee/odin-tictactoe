@@ -72,12 +72,14 @@ const game = (() => {
             const humanScore = human.total.map(Number);
             const aiScore = ai.total.map(Number);
             const modal = document.getElementById("outcomeModal");
+            const modalContent = document.querySelector(".modal-content");
             let gameWinner = document.getElementById("winner");
 
             if (checker(humanScore, winner)) {
                 console.log("Human wins!");
                 human.sayHello();
                 gameWinner.textContent = "Human";
+                modalContent.classList.add("modal-content-active");
                 modal.style.display = "block";
             }
             if (checker(aiScore, winner)) {
