@@ -66,7 +66,7 @@ const game = (() => {
         let checker = (playerTotal, winner) =>
             winner.every((value) => playerTotal.includes(value));
 
-        // for every winning combo,
+        // for every winning combo, check if the player's total matches it
         for (let i = 0; i < winningCombos.length; i++) {
             const winner = winningCombos[i];
             const humanScore = human.total.map(Number);
@@ -74,9 +74,11 @@ const game = (() => {
 
             if (checker(humanScore, winner)) {
                 console.log("Human wins!");
+                human.sayHello();
             }
             if (checker(aiScore, winner)) {
                 console.log("AI wins!");
+                ai.sayHello();
             }
         }
     };
@@ -124,26 +126,22 @@ const gameBoard = (() => {
     replay.addEventListener("click", () => {
         newGame();
     });
-    
+
     return {
-        newGame,
     };
 })();
 
 //player FACTORY
 const playerFactory = function (name, sign) {
     const sayHello = function () {
-        console.log("Hello! I am " + name + ".");
+        console.log("Hello! I am " + name + ". I win!");
     };
     this.total = [];
     return { name, sign, total, sayHello };
 };
 
 const human = playerFactory("Human", "X");
-human.sayHello();
-
 const ai = playerFactory("AI", "O");
-ai.sayHello();
 
 // game object
 
