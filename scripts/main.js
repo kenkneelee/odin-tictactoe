@@ -35,6 +35,7 @@
 //   })();
 
 //   calculator.add(3,5); // 8
+
 const game = (() => {
     // keep track of whose turn it is
     let turn = true;
@@ -49,11 +50,7 @@ const game = (() => {
         }
     };
 
-    // after every move, check for a winner
-
-    // const player1total = array of all of player 1's ticks
-    // const player2total = array of all of player 2's ticks
-
+    // check for a game winner
     const checkWin = function () {
         const winningCombos = [
             [1, 2, 3],
@@ -67,14 +64,19 @@ const game = (() => {
         ];
 
         let checker = (playerTotal, winner) =>
-        winner.every((value) => playerTotal.includes(value));
-        
+            winner.every((value) => playerTotal.includes(value));
+
         // for every winning combo,
         for (let i = 0; i < winningCombos.length; i++) {
             const winner = winningCombos[i];
-            // use checker function to compare current winning number set to player total
-            if (checker(gameBoard.playerTotal.map(Number), winner)) {
-                console.log("You win!");
+            const humanScore = human.total.map(Number);
+            const aiScore = ai.total.map(Number);
+
+            if (checker(humanScore, winner)) {
+                console.log("Human wins!");
+            }
+            if (checker(aiScore, winner)) {
+                console.log("AI wins!");
             }
         }
     };
@@ -89,33 +91,42 @@ const game = (() => {
 
 //gameboard MODULE
 const gameBoard = (() => {
-    const startBoard = [
-        [1, 2, 3],
-        [4, 5, 6],
-        [7, 8, 9],
-    ];
     const cells = document.querySelectorAll(".cell");
-    let playerTotal = [];
 
     cells.forEach((cell) => {
         cell.addEventListener("click", () => {
             if (game.turn == true && cell.textContent == "") {
-                cell.textContent = "X";
-                console.log(cell.id);
-                playerTotal.push(cell.id);
-                console.log(playerTotal);
+                cell.textContent = human.sign;
+                human.total.push(cell.id);
+
                 game.checkWin();
                 game.switchTurn();
             } else if (game.turn == false && cell.textContent == "") {
-                cell.textContent = "O";
-                console.log(cell.id);
+                cell.textContent = ai.sign;
+                ai.total.push(cell.id);
+
+                game.checkWin();
                 game.switchTurn();
             }
         });
     });
+
+    const newGame = function () {
+        cells.forEach((cell) => {
+            cell.textContent = "";
+        });
+        human.total = [];
+        ai.total = [];
+        game.turn = true;
+    };
+
+    const replay = document.querySelector(".replay");
+    replay.addEventListener("click", () => {
+        newGame();
+    });
+    
     return {
-        startBoard,
-        playerTotal,
+        newGame,
     };
 })();
 
@@ -124,16 +135,14 @@ const playerFactory = function (name, sign) {
     const sayHello = function () {
         console.log("Hello! I am " + name + ".");
     };
-    this.score = [];
-    return { name, sign, score, sayHello };
+    this.total = [];
+    return { name, sign, total, sayHello };
 };
 
 const human = playerFactory("Human", "X");
-console.log(human.name);
 human.sayHello();
 
-const ai = playerFactory ("AI", "O");
-console.log(ai.name);
+const ai = playerFactory("AI", "O");
 ai.sayHello();
 
 // game object
