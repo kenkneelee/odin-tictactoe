@@ -74,6 +74,10 @@ const game = (() => {
         const modalContent = document.querySelector(".modal-content");
         const gameWinner = document.getElementById("winner");
         const replay = document.querySelector(".replay");
+        const cellArray = Array.from(gameBoard.cells);
+
+        // function to check whether the current cell is empty
+        const fullCell = (currentCell) => currentCell.textContent != "";
 
         // checker function to check a player total against a specific winning combo
         const checker = (playerTotal, winner) =>
@@ -84,18 +88,29 @@ const game = (() => {
             const winner = winningCombos[i];
             const humanScore = human.total.map(Number);
             const aiScore = ai.total.map(Number);
-
+            // if  human has a winning score
             if (checker(humanScore, winner)) {
                 console.log("Human wins!");
                 human.sayHello();
                 gameWinner.textContent = "Human";
                 modalContent.classList.add("modal-content-active");
                 modal.style.display = "block";
-            }
-            if (checker(aiScore, winner)) {
+            // if ai has a winning score
+            } else if (checker(aiScore, winner)) {
                 console.log("AI wins!");
                 gameWinner.textContent = "AI";
                 ai.sayHello();
+                modalContent.classList.add("modal-content-active");
+                modal.style.display = "block";
+            // if neither player has winning score
+            // and every cell is full
+            } else if (
+                !checker(humanScore, winner) &&
+                !checker(aiScore, winner) &&
+                cellArray.every(fullCell)
+            ) {
+                console.log("Tie!");
+                gameWinner.textContent = "Nobody";
                 modalContent.classList.add("modal-content-active");
                 modal.style.display = "block";
             }
@@ -148,6 +163,7 @@ const gameBoard = (() => {
 
     return {
         newBoard,
+        cells,
     };
 })();
 
