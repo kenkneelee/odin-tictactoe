@@ -129,7 +129,11 @@ const gameBoard = (() => {
     // add functionality to each cell
     cells.forEach((cell) => {
         cell.addEventListener("click", () => {
-            if (game.turn == true && cell.textContent == "") {
+            if (
+                game.turn == true &&
+                cell.textContent == "" &&
+                easyAI.aiThinking == false
+            ) {
                 console.log("Human plays on cell " + cell.id);
                 cell.textContent = human.sign;
                 human.total.push(cell.id);
@@ -138,7 +142,11 @@ const gameBoard = (() => {
                     game.switchTurn();
                     easyAI.aiPlay();
                 }
-            } else if (game.turn == false && cell.textContent == "") {
+            } else if (
+                game.turn == false &&
+                cell.textContent == "" &&
+                easyAI.aiThinking == false
+            ) {
                 console.log("AI plays on cell " + cell.id);
                 cell.textContent = ai.sign;
                 ai.total.push(cell.id);
@@ -159,6 +167,7 @@ const gameBoard = (() => {
 
 // AI module
 const easyAI = (() => {
+    let aiThinking = false;
     const aiPlay = () => {
         // create an array of all remaining empty cells
         const emptyCells = gameBoard.cellArray.filter(
@@ -167,12 +176,17 @@ const easyAI = (() => {
         // pick a random cell from emptyCells array and click it
         const aiPick = Math.floor(Math.random() * emptyCells.length);
         if (game.turn == false && game.gameOver == false) {
-            setTimeout(function() {emptyCells[aiPick].click();}, 250);
+            easyAI.aiThinking = true;
+            setTimeout(function () {
+                easyAI.aiThinking = false;
+                emptyCells[aiPick].click();
+            }, 750);
         }
     };
 
     return {
         aiPlay,
+        aiThinking,
     };
 })();
 
