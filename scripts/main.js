@@ -44,6 +44,23 @@
 
 // mePlayer = factory
 
+//player FACTORY-----------------------------------
+const playerFactory = function (name, sign) {
+    const sayHello = function () {
+        console.log("Hello! I am " + name + ". I win!");
+    };
+    this.total = [];
+    return { name, sign, total, sayHello };
+};
+
+// Create player objects
+const human = playerFactory("Human", "X");
+const ai = playerFactory("AI", "O");
+
+
+
+
+// game MODULE--------------------------------------
 const game = (() => {
     // keep track of whose turn it is
     let turn = true;
@@ -75,7 +92,6 @@ const game = (() => {
         const gameWinner = document.getElementById("winner");
         const replay = document.querySelector(".replay");
 
-
         // checker function to check a player total against a specific winning combo
         const checker = (playerTotal, winner) =>
             winner.every((value) => playerTotal.includes(value));
@@ -92,20 +108,20 @@ const game = (() => {
                 gameWinner.textContent = "Human";
                 modalContent.classList.add("modal-content-active");
                 modal.style.display = "block";
-            // if ai has a winning score
+                // if ai has a winning score
             } else if (checker(aiScore, winner)) {
                 console.log("AI wins!");
                 gameWinner.textContent = "AI";
                 ai.sayHello();
                 modalContent.classList.add("modal-content-active");
                 modal.style.display = "block";
-            // if neither player has winning score
-            // and every cell is full
+                // if neither player has winning score
+                // and every cell is full
             } else if (
                 !checker(humanScore, winner) &&
                 !checker(aiScore, winner) &&
                 gameBoard.allCellsFull()
-                ) {
+            ) {
                 console.log("Tie!");
                 gameWinner.textContent = "Nobody";
                 modalContent.classList.add("modal-content-active");
@@ -131,7 +147,7 @@ const game = (() => {
     };
 })();
 
-//gameboard MODULE
+//gameboard MODULE ------------------------------------------
 const gameBoard = (() => {
     const cells = document.querySelectorAll(".cell");
     const cellArray = Array.from(cells);
@@ -145,7 +161,9 @@ const gameBoard = (() => {
     // function to check whether the current cell is empty
     const fullCell = (currentCell) => currentCell.textContent != "";
     // function to check whether all cells are empty
-    const allCellsFull = () => {return cellArray.every(fullCell);}
+    const allCellsFull = () => {
+        return cellArray.every(fullCell);
+    };
 
     // add functionality to each cell
     cells.forEach((cell) => {
@@ -155,6 +173,7 @@ const gameBoard = (() => {
                 human.total.push(cell.id);
                 game.checkWin();
                 game.switchTurn();
+                mediumAI.aiPlay();
             } else if (game.turn == false && cell.textContent == "") {
                 cell.textContent = ai.sign;
                 ai.total.push(cell.id);
@@ -167,18 +186,24 @@ const gameBoard = (() => {
     return {
         newBoard,
         allCellsFull,
+        cellArray
     };
 })();
 
-//player FACTORY
-const playerFactory = function (name, sign) {
-    const sayHello = function () {
-        console.log("Hello! I am " + name + ". I win!");
-    };
-    this.total = [];
-    return { name, sign, total, sayHello };
-};
+// AI module
+const mediumAI = (() => {
+    const aiPlay = () => {
+        const emptyCells = gameBoard.cellArray.filter(n => n.textContent == "");
+        console.log(emptyCells);
 
-// Create player objects
-const human = playerFactory("Human", "X");
-const ai = playerFactory("AI", "O");
+        const aiPick = Math.floor(Math.random() * emptyCells.length);
+        console.log(aiPick, emptyCells[aiPick])
+        if (game.turn == false) {
+        emptyCells[aiPick].click();
+        }
+    };
+
+    return {
+        aiPlay
+    };
+})();
