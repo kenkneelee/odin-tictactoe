@@ -1,50 +1,4 @@
-// FACTORY FUNCTION TO CREATE MULTIPLE.
-
-//Factory functions are plain functions that RETURN OBJECTS to use in code.
-
-// const playerFactory = function(name, sign) {
-//     const sayHello = function () {
-//         console.log("hello!");
-//     }
-
-//     return {name, sign, sayHello};
-// };
-
-// const jeff = playerFactory ("jeff", "x");
-// console.log(jeff.name);
-// jeff.sayHello();
-
-// MODULE FUNCTION WHEN ONLY ONE
-
-// THIS IS A FACTORY
-// const calculator = (a, b) => {
-//     const add = () => console.log(a + b);
-//     return {
-//         add
-//     };
-// };
-// const calc1 = calculator(3, 5);
-// calc1.add();
-
-// THIS IS A MODULE (wrapped in IIFE and immediately called)
-// const calculator = (() => {
-//     const add = (a, b) => a + b;
-//     return {
-//       add
-//     };
-//   })();
-
-//   calculator.add(3,5); // 8
-
-// game = object IIFE
-
-// gameBoard = module
-
-// displayController = module
-
-// mePlayer = factory
-
-//player FACTORY-----------------------------------
+//player FACTORY===================================
 const playerFactory = function (name, sign) {
     const sayHello = function () {
         console.log("Hello! I am " + name + ". I win!");
@@ -53,15 +7,14 @@ const playerFactory = function (name, sign) {
     return { name, sign, total, sayHello };
 };
 
-// Create player objects
+// Initialize player objects
 const human = playerFactory("Human", "X");
 const ai = playerFactory("AI", "O");
 
-
-
-
-// game MODULE--------------------------------------
+// game MODULE======================================
 const game = (() => {
+    // store whether game is over
+    let gameOver = false;
     // keep track of whose turn it is
     let turn = true;
     const header = document.querySelector("h1");
@@ -108,6 +61,7 @@ const game = (() => {
                 gameWinner.textContent = "Human";
                 modalContent.classList.add("modal-content-active");
                 modal.style.display = "block";
+                game.gameOver = true;
                 // if ai has a winning score
             } else if (checker(aiScore, winner)) {
                 console.log("AI wins!");
@@ -115,6 +69,7 @@ const game = (() => {
                 ai.sayHello();
                 modalContent.classList.add("modal-content-active");
                 modal.style.display = "block";
+                game.gameOver = true;
                 // if neither player has winning score
                 // and every cell is full
             } else if (
@@ -126,6 +81,10 @@ const game = (() => {
                 gameWinner.textContent = "Nobody";
                 modalContent.classList.add("modal-content-active");
                 modal.style.display = "block";
+                game.gameOver = true;
+            }
+            if (game.gameOver == true) {
+                break;
             }
         }
 
@@ -136,6 +95,7 @@ const game = (() => {
             ai.total = [];
             game.turn = true;
             modal.style.display = "none";
+            game.gameOver = false;
         });
     };
 
@@ -144,10 +104,11 @@ const game = (() => {
         turn,
         switchTurn,
         checkWin,
+        gameOver,
     };
 })();
 
-//gameboard MODULE ------------------------------------------
+//gameboard MODULE ============================================
 const gameBoard = (() => {
     const cells = document.querySelectorAll(".cell");
     const cellArray = Array.from(cells);
@@ -169,16 +130,22 @@ const gameBoard = (() => {
     cells.forEach((cell) => {
         cell.addEventListener("click", () => {
             if (game.turn == true && cell.textContent == "") {
+                console.log("Human plays on cell " + cell.id);
                 cell.textContent = human.sign;
                 human.total.push(cell.id);
                 game.checkWin();
-                game.switchTurn();
-                mediumAI.aiPlay();
+                if (game.gameOver == false) {
+                    game.switchTurn();
+                    easyAI.aiPlay();
+                }
             } else if (game.turn == false && cell.textContent == "") {
+                console.log("AI plays on cell " + cell.id);
                 cell.textContent = ai.sign;
                 ai.total.push(cell.id);
                 game.checkWin();
-                game.switchTurn();
+                if (game.gameOver == false) {
+                    game.switchTurn();
+                }
             }
         });
     });
@@ -186,24 +153,71 @@ const gameBoard = (() => {
     return {
         newBoard,
         allCellsFull,
-        cellArray
+        cellArray,
     };
 })();
 
 // AI module
-const mediumAI = (() => {
+const easyAI = (() => {
     const aiPlay = () => {
-        const emptyCells = gameBoard.cellArray.filter(n => n.textContent == "");
-        console.log(emptyCells);
-
+        // create an array of all remaining empty cells
+        const emptyCells = gameBoard.cellArray.filter(
+            (n) => n.textContent == ""
+        );
+        // pick a random cell from emptyCells array and click it
         const aiPick = Math.floor(Math.random() * emptyCells.length);
-        console.log(aiPick, emptyCells[aiPick])
-        if (game.turn == false) {
-        emptyCells[aiPick].click();
+        if (game.turn == false && game.gameOver == false) {
+            setTimeout(function() {emptyCells[aiPick].click();}, 250);
         }
     };
 
     return {
-        aiPlay
+        aiPlay,
     };
 })();
+
+// FACTORY FUNCTION TO CREATE MULTIPLE.
+
+//Factory functions are plain functions that RETURN OBJECTS to use in code.
+
+// const playerFactory = function(name, sign) {
+//     const sayHello = function () {
+//         console.log("hello!");
+//     }
+
+//     return {name, sign, sayHello};
+// };
+
+// const jeff = playerFactory ("jeff", "x");
+// console.log(jeff.name);
+// jeff.sayHello();
+
+// MODULE FUNCTION WHEN ONLY ONE
+
+// THIS IS A FACTORY
+// const calculator = (a, b) => {
+//     const add = () => console.log(a + b);
+//     return {
+//         add
+//     };
+// };
+// const calc1 = calculator(3, 5);
+// calc1.add();
+
+// THIS IS A MODULE (wrapped in IIFE and immediately called)
+// const calculator = (() => {
+//     const add = (a, b) => a + b;
+//     return {
+//       add
+//     };
+//   })();
+
+//   calculator.add(3,5); // 8
+
+// game = object IIFE
+
+// gameBoard = module
+
+// displayController = module
+
+// mePlayer = factory
