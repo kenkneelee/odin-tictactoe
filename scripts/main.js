@@ -74,10 +74,7 @@ const game = (() => {
         const modalContent = document.querySelector(".modal-content");
         const gameWinner = document.getElementById("winner");
         const replay = document.querySelector(".replay");
-        const cellArray = Array.from(gameBoard.cells);
 
-        // function to check whether the current cell is empty
-        const fullCell = (currentCell) => currentCell.textContent != "";
 
         // checker function to check a player total against a specific winning combo
         const checker = (playerTotal, winner) =>
@@ -107,8 +104,8 @@ const game = (() => {
             } else if (
                 !checker(humanScore, winner) &&
                 !checker(aiScore, winner) &&
-                cellArray.every(fullCell)
-            ) {
+                gameBoard.allCellsFull()
+                ) {
                 console.log("Tie!");
                 gameWinner.textContent = "Nobody";
                 modalContent.classList.add("modal-content-active");
@@ -137,24 +134,30 @@ const game = (() => {
 //gameboard MODULE
 const gameBoard = (() => {
     const cells = document.querySelectorAll(".cell");
+    const cellArray = Array.from(cells);
+
     const newBoard = function () {
         cells.forEach((cell) => {
             cell.textContent = "";
         });
     };
 
+    // function to check whether the current cell is empty
+    const fullCell = (currentCell) => currentCell.textContent != "";
+    // function to check whether all cells are empty
+    const allCellsFull = () => {return cellArray.every(fullCell);}
+
+    // add functionality to each cell
     cells.forEach((cell) => {
         cell.addEventListener("click", () => {
             if (game.turn == true && cell.textContent == "") {
                 cell.textContent = human.sign;
                 human.total.push(cell.id);
-
                 game.checkWin();
                 game.switchTurn();
             } else if (game.turn == false && cell.textContent == "") {
                 cell.textContent = ai.sign;
                 ai.total.push(cell.id);
-
                 game.checkWin();
                 game.switchTurn();
             }
@@ -163,7 +166,7 @@ const gameBoard = (() => {
 
     return {
         newBoard,
-        cells,
+        allCellsFull,
     };
 })();
 
@@ -177,6 +180,5 @@ const playerFactory = function (name, sign) {
 };
 
 // Create player objects
-
 const human = playerFactory("Human", "X");
 const ai = playerFactory("AI", "O");
