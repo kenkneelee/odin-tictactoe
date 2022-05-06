@@ -2,7 +2,7 @@
 const playerFactory = function (name, sign) {
     const sayHello = function () {
         console.log("Hello! I am " + name + ". I win!");
-        return ("Hello! I am " + name + ". I win!");
+        return "Hello! I am " + name + ". I win!";
     };
     this.total = [];
     return { name, sign, total, sayHello };
@@ -19,15 +19,15 @@ const game = (() => {
     // keep track of whose turn it is
     let turn = true;
     const header = document.querySelector("h1");
-    const turnText = document.createElement("p")
-    turnText.textContent="turn";
-    const thinkingText = document.createElement("p")
-    thinkingText.textContent="thinking";
+    const turnText = document.createElement("p");
+    turnText.textContent = "turn";
+    const thinkingText = document.createElement("p");
+    thinkingText.textContent = "thinking";
 
     const switchTurn = function () {
         if (this.turn == true) {
             this.turn = false;
-            header.textContent = ai.name +  "'s";
+            header.textContent = ai.name + "'s";
             header.appendChild(thinkingText);
         } else {
             this.turn = true;
@@ -59,43 +59,45 @@ const game = (() => {
             winner.every((value) => playerTotal.includes(value));
 
         // use checker function to compare player totals to all winning combos
+        const humanScore = human.total.map(Number);
+        const aiScore = ai.total.map(Number);
         for (let i = 0; i < winningCombos.length; i++) {
             const winner = winningCombos[i];
-            const humanScore = human.total.map(Number);
-            const aiScore = ai.total.map(Number);
             // if  human has a winning score
-            if (checker(humanScore, winner)) {
-                console.log("Human wins!");
-                winMsg.textContent='"'+human.sayHello()+'"';
-                gameWinner.textContent = "Human";
-                modalContent.classList.add("modal-content-active");
-                modal.style.display = "block";
-                game.gameOver = true;
-                // if ai has a winning score
-            } else if (checker(aiScore, winner)) {
-                console.log("AI wins!");
-                gameWinner.textContent = "AI";
-                winMsg.textContent='"'+ai.sayHello()+'"';
-                modalContent.classList.add("modal-content-active");
-                modal.style.display = "block";
-                game.gameOver = true;
-                // if neither player has winning score
-                // and every cell is full
-            } else if (
-                !checker(humanScore, winner) &&
-                !checker(aiScore, winner) &&
-                gameBoard.allCellsFull()
-            ) {
-                console.log("Tie!");
-                gameWinner.textContent = "Nobody";
-                modalContent.classList.add("modal-content-active");
-                winMsg.textContent='';
-                modal.style.display = "block";
-                game.gameOver = true;
-            }
+            const checkForWinner = () => {
+                if (checker(humanScore, winner)) {
+                    console.log("Human wins!");
+                    winMsg.textContent = '"' + human.sayHello() + '"';
+                    gameWinner.textContent = "Human";
+                    modalContent.classList.add("modal-content-active");
+                    modal.style.display = "block";
+                    game.gameOver = true;
+                    // if ai has a winning score
+                } else if (checker(aiScore, winner)) {
+                    console.log("AI wins!");
+                    gameWinner.textContent = "AI";
+                    winMsg.textContent = '"' + ai.sayHello() + '"';
+                    modalContent.classList.add("modal-content-active");
+                    modal.style.display = "block";
+                    game.gameOver = true;
+                }
+            };
+            checkForWinner();
+
+            // if there is a winner stop checking the other numbers and spamming the console
             if (game.gameOver == true) {
                 break;
             }
+        }
+        // if neither player has winning score
+        // and every cell is full
+        if (gameBoard.allCellsFull() && game.gameOver == false) {
+            console.log("Tie!");
+            gameWinner.textContent = "Nobody";
+            modalContent.classList.add("modal-content-active");
+            winMsg.textContent = "";
+            modal.style.display = "block";
+            game.gameOver = true;
         }
 
         // reset game
@@ -104,6 +106,7 @@ const game = (() => {
             human.total = [];
             ai.total = [];
             game.turn = true;
+            header.textContent = "Here we go again..";
             modal.style.display = "none";
             game.gameOver = false;
         });
@@ -195,9 +198,9 @@ const easyAI = (() => {
     };
     const scoreBoardNames = () => {
         const scoreNames = document.getElementsByClassName("scoreName");
-        scoreNames[0].textContent=human.name + ":";
-        scoreNames[1].textContent=ai.name + ":";
-    }
+        scoreNames[0].textContent = human.name + ":";
+        scoreNames[1].textContent = ai.name + ":";
+    };
     scoreBoardNames();
     return {
         aiPlay,
