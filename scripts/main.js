@@ -18,13 +18,20 @@ const game = (() => {
     // keep track of whose turn it is
     let turn = true;
     const header = document.querySelector("h1");
+    const turnText = document.createElement("p")
+    turnText.textContent="turn";
+    const thinkingText = document.createElement("p")
+    thinkingText.textContent="thinking";
+
     const switchTurn = function () {
         if (this.turn == true) {
             this.turn = false;
-            header.textContent = "Player 2's turn";
+            header.textContent = ai.name +  "'s";
+            header.appendChild(thinkingText);
         } else {
             this.turn = true;
-            header.textContent = "Player 1's turn";
+            header.textContent = human.name + "'s";
+            header.appendChild(turnText);
         }
     };
 
