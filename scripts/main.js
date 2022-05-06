@@ -2,6 +2,7 @@
 const playerFactory = function (name, sign) {
     const sayHello = function () {
         console.log("Hello! I am " + name + ". I win!");
+        return ("Hello! I am " + name + ". I win!");
     };
     this.total = [];
     return { name, sign, total, sayHello };
@@ -50,6 +51,7 @@ const game = (() => {
         const modal = document.getElementById("outcomeModal");
         const modalContent = document.querySelector(".modal-content");
         const gameWinner = document.getElementById("winner");
+        const winMsg = document.getElementById("winnerMsg");
         const replay = document.querySelector(".replay");
 
         // checker function to check a player total against a specific winning combo
@@ -64,7 +66,7 @@ const game = (() => {
             // if  human has a winning score
             if (checker(humanScore, winner)) {
                 console.log("Human wins!");
-                human.sayHello();
+                winMsg.textContent='"'+human.sayHello()+'"';
                 gameWinner.textContent = "Human";
                 modalContent.classList.add("modal-content-active");
                 modal.style.display = "block";
@@ -73,7 +75,7 @@ const game = (() => {
             } else if (checker(aiScore, winner)) {
                 console.log("AI wins!");
                 gameWinner.textContent = "AI";
-                ai.sayHello();
+                winMsg.textContent='"'+ai.sayHello()+'"';
                 modalContent.classList.add("modal-content-active");
                 modal.style.display = "block";
                 game.gameOver = true;
@@ -87,6 +89,7 @@ const game = (() => {
                 console.log("Tie!");
                 gameWinner.textContent = "Nobody";
                 modalContent.classList.add("modal-content-active");
+                winMsg.textContent='';
                 modal.style.display = "block";
                 game.gameOver = true;
             }
@@ -126,7 +129,7 @@ const gameBoard = (() => {
         });
     };
 
-    // function to check whether the current cell is empty
+    // function to check whether the current cell is full
     const fullCell = (currentCell) => currentCell.textContent != "";
     // function to check whether all cells are empty
     const allCellsFull = () => {
@@ -190,7 +193,12 @@ const easyAI = (() => {
             }, 750);
         }
     };
-
+    const scoreBoardNames = () => {
+        const scoreNames = document.getElementsByClassName("scoreName");
+        scoreNames[0].textContent=human.name + ":";
+        scoreNames[1].textContent=ai.name + ":";
+    }
+    scoreBoardNames();
     return {
         aiPlay,
         aiThinking,
