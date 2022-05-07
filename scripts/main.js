@@ -17,17 +17,20 @@ const ai = playerFactory("AI", "O");
 const game = (() => {
     // store whether game is over
     let gameOver = false;
-    // keep track of whose turn it is
+    // keep track of whether it is player's turn
     let turn = true;
+    // game title / turn tracker header
     const header = document.querySelector("h1");
     const turnText = document.createElement("p");
     turnText.textContent = "turn";
     const thinkingText = document.createElement("p");
     thinkingText.textContent = "thinking";
+    // win counters
     const winCounters = document.getElementsByClassName("winCounter");
 
+    // function to change whose turn it is
     const switchTurn = function () {
-        if (this.turn == true) {
+        if (this.turn) {
             this.turn = false;
             header.textContent = ai.name + "'s";
             header.appendChild(thinkingText);
@@ -63,33 +66,28 @@ const game = (() => {
         // use checker function to compare player totals to all winning combos
         const humanScore = human.total.map(Number);
         const aiScore = ai.total.map(Number);
+
+        // function to celebrate a round win
+        const winnerStuff = (roundWinner) => {
+            console.log (roundWinner.name + "wins!");
+            gameWinner.textContent = roundWinner.name;
+            winMsg.textContent = '"' + roundWinner.sayHello() + '"';
+            modalContent.classList.add("modal-content-active");
+            modal.style.display = "block";
+            game.gameOver = true;
+            roundWinner.wins++;
+        }
         for (let i = 0; i < winningCombos.length; i++) {
             const winner = winningCombos[i];
             // if  human has a winning score
-            const checkForWinner = () => {
-                if (checker(humanScore, winner)) {
-                    console.log("Human wins!");
-                    gameWinner.textContent = "Human";
-                    winMsg.textContent = '"' + human.sayHello() + '"';
-                    modalContent.classList.add("modal-content-active");
-                    modal.style.display = "block";
-                    game.gameOver = true;
-                    human.wins ++;
-                    winCounters[0].textContent = human.wins;
-                    // if ai has a winning score
-                } else if (checker(aiScore, winner)) {
-                    console.log("AI wins!");
-                    gameWinner.textContent = "AI";
-                    winMsg.textContent = '"' + ai.sayHello() + '"';
-                    modalContent.classList.add("modal-content-active");
-                    modal.style.display = "block";
-                    game.gameOver = true;
-                    ai.wins ++;
-                    winCounters[1].textContent = ai.wins;
-                }
-            };
-            checkForWinner();
-
+            if (checker(humanScore, winner)) {
+                winnerStuff(human);
+                winCounters[0].textContent = human.wins;
+                // if ai has a winning score
+            } else if (checker(aiScore, winner)) {
+                winnerStuff(ai);
+                winCounters[1].textContent = ai.wins;
+            }
             // if there is a winner stop checking the other numbers and spamming the console
             if (game.gameOver == true) {
                 break;
@@ -106,7 +104,7 @@ const game = (() => {
             game.gameOver = true;
         }
 
-        // reset game
+        // reset game button 
         replay.addEventListener("click", () => {
             gameBoard.newBoard();
             human.total = [];
@@ -132,6 +130,7 @@ const gameBoard = (() => {
     const cells = document.querySelectorAll(".cell");
     const cellArray = Array.from(cells);
 
+    // function to reset the board
     const newBoard = function () {
         cells.forEach((cell) => {
             cell.textContent = "";
@@ -140,7 +139,7 @@ const gameBoard = (() => {
 
     // function to check whether the current cell is full
     const fullCell = (currentCell) => currentCell.textContent != "";
-    // function to check whether all cells are empty
+    // function to check whether all cells are full
     const allCellsFull = () => {
         return cellArray.every(fullCell);
     };
@@ -157,7 +156,7 @@ const gameBoard = (() => {
                 cell.textContent = human.sign;
                 human.total.push(cell.id);
                 game.checkWin();
-                if (game.gameOver == false) {
+                if (!game.gameOver) {
                     game.switchTurn();
                     easyAI.aiPlay();
                 }
@@ -170,7 +169,7 @@ const gameBoard = (() => {
                 cell.textContent = ai.sign;
                 ai.total.push(cell.id);
                 game.checkWin();
-                if (game.gameOver == false) {
+                if (!game.gameOver) {
                     game.switchTurn();
                 }
             }
