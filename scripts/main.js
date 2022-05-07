@@ -5,7 +5,8 @@ const playerFactory = function (name, sign) {
         return "Hello! I am " + name + ". I win!";
     };
     this.total = [];
-    return { name, sign, total, sayHello };
+    this.wins = 0;
+    return { name, sign, total, wins, sayHello };
 };
 
 // Initialize player objects
@@ -23,6 +24,7 @@ const game = (() => {
     turnText.textContent = "turn";
     const thinkingText = document.createElement("p");
     thinkingText.textContent = "thinking";
+    const winCounters = document.getElementsByClassName("winCounter");
 
     const switchTurn = function () {
         if (this.turn == true) {
@@ -67,11 +69,13 @@ const game = (() => {
             const checkForWinner = () => {
                 if (checker(humanScore, winner)) {
                     console.log("Human wins!");
-                    winMsg.textContent = '"' + human.sayHello() + '"';
                     gameWinner.textContent = "Human";
+                    winMsg.textContent = '"' + human.sayHello() + '"';
                     modalContent.classList.add("modal-content-active");
                     modal.style.display = "block";
                     game.gameOver = true;
+                    human.wins ++;
+                    winCounters[0].textContent = human.wins;
                     // if ai has a winning score
                 } else if (checker(aiScore, winner)) {
                     console.log("AI wins!");
@@ -80,6 +84,8 @@ const game = (() => {
                     modalContent.classList.add("modal-content-active");
                     modal.style.display = "block";
                     game.gameOver = true;
+                    ai.wins ++;
+                    winCounters[1].textContent = ai.wins;
                 }
             };
             checkForWinner();
