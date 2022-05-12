@@ -40,21 +40,22 @@ const game = (() => {
         }
     };
 
+    // reset game button
+    const modal = document.getElementById("outcomeModal");
+    const replay = document.querySelector(".replay");
+    replay.addEventListener("click", () => {
+        gameBoard.newBoard();
+        game.turn = true;
+        header.textContent = "Here we go again..";
+        modal.style.display = "none";
+        game.gameOver = false;
+    });
+
     // check for a game winner, enable resetting game
     const checkWin = function (board, player) {
-        const modal = document.getElementById("outcomeModal");
         const modalContent = document.querySelector(".modal-content");
         const gameWinner = document.getElementById("winner");
         const winMsg = document.getElementById("winnerMsg");
-        // reset game button
-        const replay = document.querySelector(".replay");
-        replay.addEventListener("click", () => {
-            gameBoard.newBoard();
-            game.turn = true;
-            header.textContent = "Here we go again..";
-            modal.style.display = "none";
-            game.gameOver = false;
-        });
 
         // function to celebrate a round win, pop up the modal
         const winnerStuff = (roundWinner) => {
@@ -128,7 +129,7 @@ const gameBoard = (() => {
         for (let i = 0; i < cellArray.length; i++) {
             currentBoard[i] = "";
         }
-        console.log("a")
+        console.log("a");
     };
 
     // function to check whether the current cell is full
