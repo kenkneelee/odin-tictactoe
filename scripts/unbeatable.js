@@ -4,9 +4,8 @@ const playerFactory = function (name, sign) {
         console.log("Hello! I am " + name + ". I win!");
         return "Hello! I am " + name + ". I win!";
     };
-    this.total = [];
     this.wins = 0;
-    return { name, sign, total, wins, sayHello };
+    return { name, sign, wins, sayHello };
 };
 
 // Initialize player objects
@@ -17,7 +16,7 @@ const ai = playerFactory("AI", "O");
 const game = (() => {
     // store whether game is over
     let gameOver = false;
-    // keep track of whether it is player's turn
+    // keep track of whether it is human player's turn
     let turn = true;
     // game title / turn tracker header
     const header = document.querySelector("h1");
@@ -42,78 +41,63 @@ const game = (() => {
     };
 
     // check for a game winner, enable resetting game
-    const checkWin = function () {
-        const winningCombos = [
-            [1, 2, 3],
-            [4, 5, 6],
-            [7, 8, 9],
-            [1, 4, 7],
-            [2, 5, 8],
-            [3, 6, 9],
-            [1, 5, 9],
-            [3, 5, 7],
-        ];
+    const checkWin = function (board, player) {
         const modal = document.getElementById("outcomeModal");
         const modalContent = document.querySelector(".modal-content");
         const gameWinner = document.getElementById("winner");
         const winMsg = document.getElementById("winnerMsg");
+        // reset game button
         const replay = document.querySelector(".replay");
+        replay.addEventListener("click", () => {
+            gameBoard.newBoard();
+            game.turn = true;
+            header.textContent = "Here we go again..";
+            modal.style.display = "none";
+            game.gameOver = false;
+        });
 
-        // checker function to check a player total against a specific winning combo
-        const checker = (playerTotal, winner) =>
-            winner.every((value) => playerTotal.includes(value));
-
-        // use checker function to compare player totals to all winning combos
-        const humanScore = human.total.map(Number);
-        const aiScore = ai.total.map(Number);
-
-        // function to celebrate a round win
+        // function to celebrate a round win, pop up the modal
         const winnerStuff = (roundWinner) => {
-            console.log (roundWinner.name + " wins!");
+            console.log(roundWinner.name + " wins!");
             gameWinner.textContent = roundWinner.name;
             winMsg.textContent = '"' + roundWinner.sayHello() + '"';
             modalContent.classList.add("modal-content-active");
             modal.style.display = "block";
             game.gameOver = true;
             roundWinner.wins++;
-        }
-        for (let i = 0; i < winningCombos.length; i++) {
-            const winner = winningCombos[i];
-            // if  human has a winning score
-            if (checker(humanScore, winner)) {
-                winnerStuff(human);
-                winCounters[0].textContent = human.wins;
-                // if ai has a winning score
-            } else if (checker(aiScore, winner)) {
-                winnerStuff(ai);
-                winCounters[1].textContent = ai.wins;
-            }
-            // if there is a winner stop checking the other numbers and spamming the console
-            if (game.gameOver == true) {
-                break;
-            }
-        }
-        // if neither player has winning score
-        // and every cell is full
-        if (gameBoard.allCellsFull() && game.gameOver == false) {
-            console.log("Tie!");
-            gameWinner.textContent = "Nobody";
-            modalContent.classList.add("modal-content-active");
-            winMsg.textContent = "";
-            modal.style.display = "block";
-            game.gameOver = true;
-        }
+        };
 
-        // reset game button 
-        replay.addEventListener("click", () => {
-            gameBoard.newBoard();
-            human.total = [];
-            ai.total = [];
-            game.turn = true;
-            header.textContent = "Here we go again..";
-            modal.style.display = "none";
-            game.gameOver = false;
-        });
+        if (
+            (board[0] == player.sign &&
+                board[1] == player.sign &&
+                board[2] == player.sign) ||
+            (board[3] == player.sign &&
+                board[4] == player.sign &&
+                board[5] == player.sign) ||
+            (board[6] == player.sign &&
+                board[7] == player.sign &&
+                board[8] == player.sign) ||
+            (board[0] == player.sign &&
+                board[3] == player.sign &&
+                board[6] == player.sign) ||
+            (board[1] == player.sign &&
+                board[4] == player.sign &&
+                board[7] == player.sign) ||
+            (board[2] == player.sign &&
+                board[5] == player.sign &&
+                board[8] == player.sign) ||
+            (board[0] == player.sign &&
+                board[4] == player.sign &&
+                board[8] == player.sign) ||
+            (board[2] == player.sign &&
+                board[4] == player.sign &&
+                board[6] == player.sign)
+        ) {
+            winnerStuff(player);
+            return true;
+        } else {
+            return false;
+        }
     };
 
     // return
@@ -129,6 +113,11 @@ const game = (() => {
 const gameBoard = (() => {
     const cells = document.querySelectorAll(".cell");
     const cellArray = Array.from(cells);
+    let currentBoard = [];
+    for (let i = 0; i < cellArray.length; i++) {
+        currentBoard[i] = cellArray[i].textContent;
+    }
+    console.log(currentBoard);
 
     // function to reset the board
     const newBoard = function () {
@@ -136,24 +125,18 @@ const gameBoard = (() => {
             cell.textContent = "";
         });
         currentBoard = [];
-        for (let i=0; i<cellArray.length; i++) {
+        for (let i = 0; i < cellArray.length; i++) {
             currentBoard[i] = "";
         }
+        console.log("a")
     };
 
     // function to check whether the current cell is full
     const fullCell = (currentCell) => currentCell.textContent != "";
-    // function to check whether all cells are full
+    // function to check whether all cells are full (terminal state)
     const allCellsFull = () => {
         return cellArray.every(fullCell);
     };
-
-    let currentBoard = [];
-    for (let i=0; i<cellArray.length; i++) {
-        currentBoard[i] = cellArray[i].textContent;
-    }
-    console.log (currentBoard);
-
 
     // add functionality to each cell
     cells.forEach((cell) => {
@@ -164,14 +147,12 @@ const gameBoard = (() => {
                 easyAI.aiThinking == false
             ) {
                 console.log("Human plays on cell " + cell.id);
-                currentBoard[cell.id-1] = human.sign;
+                currentBoard[cell.id - 1] = human.sign;
                 console.log(currentBoard);
                 cell.textContent = human.sign;
-                human.total.push(cell.id);
-                game.checkWin();
+                game.checkWin(currentBoard, human);
                 if (!game.gameOver) {
                     game.switchTurn();
-                    easyAI.aiPlay();
                 }
             } else if (
                 game.turn == false &&
@@ -179,11 +160,10 @@ const gameBoard = (() => {
                 easyAI.aiThinking == false
             ) {
                 console.log("AI plays on cell " + cell.id);
-                currentBoard[cell.id-1] = ai.sign;
+                currentBoard[cell.id - 1] = ai.sign;
                 console.log(currentBoard);
                 cell.textContent = ai.sign;
-                ai.total.push(cell.id);
-                game.checkWin();
+                game.checkWin(currentBoard, ai);
                 if (!game.gameOver) {
                     game.switchTurn();
                 }
@@ -195,7 +175,7 @@ const gameBoard = (() => {
         newBoard,
         allCellsFull,
         cellArray,
-        currentBoard
+        currentBoard,
     };
 })();
 
@@ -228,49 +208,3 @@ const easyAI = (() => {
         aiThinking,
     };
 })();
-
-// FACTORY FUNCTION TO CREATE MULTIPLE.
-
-//Factory functions are plain functions that RETURN OBJECTS to use in code.
-
-// const playerFactory = function(name, sign) {
-//     const sayHello = function () {
-//         console.log("hello!");
-//     }
-
-//     return {name, sign, sayHello};
-// };
-
-// const jeff = playerFactory ("jeff", "x");
-// console.log(jeff.name);
-// jeff.sayHello();
-
-// MODULE FUNCTION WHEN ONLY ONE
-
-// THIS IS A FACTORY
-// const calculator = (a, b) => {
-//     const add = () => console.log(a + b);
-//     return {
-//         add
-//     };
-// };
-// const calc1 = calculator(3, 5);
-// calc1.add();
-
-// THIS IS A MODULE (wrapped in IIFE and immediately called)
-// const calculator = (() => {
-//     const add = (a, b) => a + b;
-//     return {
-//       add
-//     };
-//   })();
-
-//   calculator.add(3,5); // 8
-
-// game = object IIFE
-
-// gameBoard = module
-
-// displayController = module
-
-// mePlayer = factory
