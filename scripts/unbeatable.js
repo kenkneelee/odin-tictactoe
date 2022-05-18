@@ -96,7 +96,18 @@ const game = (() => {
         ) {
             winnerStuff(player);
             return true;
-        } else {
+        } 
+        else if (gameBoard.allCellsFull() && !gameOver){
+            console.log("Tie!");
+            gameWinner.textContent = "Nobody";
+            modalContent.classList.add("modal-content-active");
+            winMsg.textContent = "";
+            modal.style.display = "block";
+            game.gameOver = true;
+            return false;
+        }
+
+        else {
             return false;
         }
     };
