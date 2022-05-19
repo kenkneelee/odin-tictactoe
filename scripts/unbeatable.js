@@ -96,18 +96,15 @@ const game = (() => {
         ) {
             winnerStuff(player);
             return true;
-        } 
-        else if (gameBoard.allCellsFull() && !gameOver){
-            console.log("Tie!");
-            gameWinner.textContent = "Nobody";
-            modalContent.classList.add("modal-content-active");
-            winMsg.textContent = "";
-            modal.style.display = "block";
-            game.gameOver = true;
-            return false;
-        }
-
-        else {
+            // } else if (gameBoard.allCellsFull() && !gameOver) {
+            //     console.log("Tie!");
+            //     gameWinner.textContent = "Nobody";
+            //     modalContent.classList.add("modal-content-active");
+            //     winMsg.textContent = "";
+            //     modal.style.display = "block";
+            //     game.gameOver = true;
+            //     return false;
+        } else {
             return false;
         }
     };
@@ -165,6 +162,7 @@ const gameBoard = (() => {
                 game.checkWin(currentBoard, human);
                 if (!game.gameOver) {
                     game.switchTurn();
+                    easyAI.aiPlay();
                 }
             } else if (
                 game.turn == false &&
@@ -195,20 +193,127 @@ const gameBoard = (() => {
 const easyAI = (() => {
     let aiThinking = false;
     const aiPlay = () => {
-        // create an array of all remaining empty cells
-        const emptyCells = gameBoard.cellArray.filter(
-            (n) => n.textContent == ""
-        );
-        // pick a random cell from emptyCells array and click it
-        const aiPick = Math.floor(Math.random() * emptyCells.length);
-        if (game.turn == false && game.gameOver == false) {
-            easyAI.aiThinking = true;
-            setTimeout(function () {
-                easyAI.aiThinking = false;
-                emptyCells[aiPick].click();
-            }, 750);
+        // var bestSpot = minimax(gameBoard.cellArray, ai);
+        bestSpot = minimax(gameBoard.cellArray, ai);
+        // if (game.turn == false && game.gameOver == false) {
+        //     easyAI.aiThinking = true;
+        //     setTimeout(function () {
+        //         easyAI.aiThinking = false;
+        //         emptyCells[aiPick].click();
+        //     }, 750);
+        // }
+
+        function minimax(newBoard, player) {
+            const availSpots = newBoard.filter((n) => n.textContent == "");
+            // console.log(availSpots);
+            if (game.checkWin(newBoard, human)) {
+                return { score: -10 };
+            } else if (game.checkWin(newBoard, ai)) {
+                return { score: 10 };
+            } else if (availSpots.length == 0) {
+                return { score: 0 };
+            }
+
+            let moves = [];
+            for (let i = 0; i < availSpots.length; i++) {
+                let move = {};
+                move.cell = availSpots[i];
+                // console.log(move);
+                move.cell.textContent = player.sign;
+
+                if (player == ai) {
+                    let result = minimax(newBoard, human);
+                    move.score = result;
+                } else {
+                    let result = minimax(newBoard, ai);
+                    move.score = result;
+                }
+                move.cell.textContent = "";
+                moves.push(move);
+                if (move.score == 10 || move.score == -10) {
+                console.log(move.score)
+                }
+            }
+
+            
+            // let bestMove;
+            // if (player == ai) {
+            //     let bestScore = -10000;
+            //     for (let i = 0; i < moves.length; i++) {
+            //         if (moves[i].score > bestScore) {
+            //             bestScore = moves[i].score;
+            //             bestMove = i;
+            //         }
+            //     }
+            // } else {
+            //     let bestScore = 10000;
+            //     for (let i = 0; i < moves.length; i++) {
+            //         if (moves[i].score < bestScore) {
+            //             bestScore = moves[i].score;
+            //             bestMove = i;
+            //         }
+            //     }
+            // }
+            // return moves[bestMove];
         }
+
+        // let moves = [];
+
+        // for (let i = 0; i < availSpots.length; i++) {
+        //     let move = {};
+        //     move.index = newBoard[availSpots[i]];
+
+        //     newBoard[availSpots[i]] = player.sign;
+
+        //     if (player == ai) {
+        //         let result = minimax(newBoard, human);
+        //         move.score = result.score;
+        //     }
+        //     else {
+        //         let result = minimax (newBoard, ai);
+        //         move.score = result.score;
+        //     }
+
+        //     newBoard[availSpots[i]] = move.index;
+        //     moves.push(move);
+        // }
+
+        // let bestMove;
+        // if (player == ai) {
+        //     let bestScore = -Infinity;
+        //     for (let i=0; i<moves.length; i++){
+        //         if (moves[i].score > bestScore) {
+        //             bestScore = moves[i].score;
+        //             bestMove = i;
+        //         }
+        //     }
+        // } else {
+        //     let bestScore = Infinity;
+        //     for (let i=0; i< moves.length; i++) {
+        //         if (moves[i].score < bestScore) {
+        //             bestScore = moves[i].score;
+        //             bestMove = i;
+        //         }
+        //     }
+        // }
+        // return moves[bestMove];
+
+        // // create an array of all remaining empty cells
+        // const emptyCells = gameBoard.cellArray.filter(
+        //     (n) => n.textContent == ""
+        // );
+        // console.log(emptyCells);
+        // // pick a random cell from emptyCells array and click it
+        // const aiPick = Math.floor(Math.random() * emptyCells.length);
+        // if (game.turn == false && game.gameOver == false) {
+        //     easyAI.aiThinking = true;
+        //     setTimeout(function () {
+        //         easyAI.aiThinking = false;
+        //         emptyCells[aiPick].click();
+        //     }, 750);
+        // }
     };
+
     const scoreBoardNames = () => {
         const scoreNames = document.getElementsByClassName("scoreName");
         scoreNames[0].textContent = human.name + ":";
