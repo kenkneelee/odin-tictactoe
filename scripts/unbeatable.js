@@ -94,7 +94,7 @@ const game = (() => {
                 board[4] == player.sign &&
                 board[6] == player.sign)
         ) {
-            winnerStuff(player);
+            // winnerStuff(player);
             return true;
             // } else if (gameBoard.allCellsFull() && !gameOver) {
             //     console.log("Tie!");
@@ -196,6 +196,7 @@ const easyAI = (() => {
         const originalBoard = gameBoard.currentBoard;
         // var bestSpot = minimax(gameBoard.cellArray, ai);
         bestSpot = minimax(originalBoard, ai);
+        console.log(bestSpot);
         // if (game.turn == false && game.gameOver == false) {
         //     easyAI.aiThinking = true;
         //     setTimeout(function () {
@@ -206,8 +207,8 @@ const easyAI = (() => {
         // console.log(bestSpot);
 
         function minimax(newBoard, player) {
-            console.log ("ai minimax running. working with board: ");
-            console.log (newBoard);
+            // console.log ("ai minimax running. working with board: ");
+            // console.log (newBoard);
             // array of all the available spots
             const availSpotsCheck = function (checkBoard) {
                 let spots = [];
@@ -220,9 +221,9 @@ const easyAI = (() => {
             }
 
             // const availSpots = newBoard.filter((n) => n == "");
-            console.log ("available spots are");
+            // console.log ("available spots are");
             const availSpots = availSpotsCheck(newBoard);
-            console.log (availSpots);
+            // console.log (availSpots);
             // human is minimizing player / endstate
             if (game.checkWin(newBoard, human)) {
                 return { score: -10 };
@@ -241,19 +242,19 @@ const easyAI = (() => {
             // for all available spots create a move
             for (let i = 0; i < availSpots.length; i++) {
                 let move = {};
-                console.log ("available spot index is " + availSpots[i]);
-                // move.index = newBoard[availSpots[i]];
+                // console.log ("available spot index is " + availSpots[i]);
+                move.index = availSpots[i];
                 // make the move
-                console.log("making the move. board is now: ")
+                // console.log("making the move. board is now: ")
                 newBoard[availSpots[i]] = player.sign;
-                console.log(newBoard);
+                // console.log(newBoard);
                 // check for endstate after making the move, if not found it will run again
                 if (player == ai) {
-                    // let result = minimax(newBoard, human);
-                    // move.score = result;
+                     let result = minimax(newBoard, human);
+                     move.score = result.score;
                 } else {
-                    // let result = minimax(newBoard, ai);
-                    // move.score = result;
+                     let result = minimax(newBoard, ai);
+                     move.score = result.score;
                 }
 
                 // unmake the move if no endstate found
@@ -262,6 +263,7 @@ const easyAI = (() => {
                 // add this move to the array of possible moves
                 moves.push(move);
             }
+            // console.log(moves);
 
             let bestMove;
             if (player == ai) {
