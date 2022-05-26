@@ -197,6 +197,15 @@ const easyAI = (() => {
         // var bestSpot = minimax(gameBoard.cellArray, ai);
         bestSpot = minimax(originalBoard, ai);
         console.log(bestSpot);
+
+        if (game.turn == false && game.gameOver == false) {
+            easyAI.aiThinking = true;
+            setTimeout(function () {
+                easyAI.aiThinking = false;
+                gameBoard.cellArray[bestSpot.index].click();
+            }, 750);
+        }
+
         // if (game.turn == false && game.gameOver == false) {
         //     easyAI.aiThinking = true;
         //     setTimeout(function () {
@@ -212,13 +221,16 @@ const easyAI = (() => {
             // array of all the available spots
             const availSpotsCheck = function (checkBoard) {
                 let spots = [];
-                for (let i=0; i<checkBoard.length; i++) {
-                    if (checkBoard[i] !== human.sign && checkBoard[i]!== ai.sign) {
+                for (let i = 0; i < checkBoard.length; i++) {
+                    if (
+                        checkBoard[i] !== human.sign &&
+                        checkBoard[i] !== ai.sign
+                    ) {
                         spots.push(i);
-                     }
+                    }
                 }
                 return spots;
-            }
+            };
 
             // const availSpots = newBoard.filter((n) => n == "");
             // console.log ("available spots are");
@@ -250,11 +262,11 @@ const easyAI = (() => {
                 // console.log(newBoard);
                 // check for endstate after making the move, if not found it will run again
                 if (player == ai) {
-                     let result = minimax(newBoard, human);
-                     move.score = result.score;
+                    let result = minimax(newBoard, human);
+                    move.score = result.score;
                 } else {
-                     let result = minimax(newBoard, ai);
-                     move.score = result.score;
+                    let result = minimax(newBoard, ai);
+                    move.score = result.score;
                 }
 
                 // unmake the move if no endstate found
