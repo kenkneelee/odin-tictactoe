@@ -193,8 +193,9 @@ const gameBoard = (() => {
 const easyAI = (() => {
     let aiThinking = false;
     const aiPlay = () => {
+        const originalBoard = gameBoard.currentBoard;
         // var bestSpot = minimax(gameBoard.cellArray, ai);
-        bestSpot = minimax(gameBoard.cellArray, ai);
+        bestSpot = minimax(originalBoard, ai);
         // if (game.turn == false && game.gameOver == false) {
         //     easyAI.aiThinking = true;
         //     setTimeout(function () {
@@ -202,116 +203,86 @@ const easyAI = (() => {
         //         emptyCells[aiPick].click();
         //     }, 750);
         // }
+        // console.log(bestSpot);
 
         function minimax(newBoard, player) {
-            const availSpots = newBoard.filter((n) => n.textContent == "");
-            // console.log(availSpots);
+            console.log ("ai minimax running. working with board: ");
+            console.log (newBoard);
+            // array of all the available spots
+            const availSpotsCheck = function (checkBoard) {
+                let spots = [];
+                for (let i=0; i<checkBoard.length; i++) {
+                    if (checkBoard[i] !== human.sign && checkBoard[i]!== ai.sign) {
+                        spots.push(i);
+                     }
+                }
+                return spots;
+            }
+
+            // const availSpots = newBoard.filter((n) => n == "");
+            console.log ("available spots are");
+            const availSpots = availSpotsCheck(newBoard);
+            console.log (availSpots);
+            // human is minimizing player / endstate
             if (game.checkWin(newBoard, human)) {
                 return { score: -10 };
+                // ai is maximizing player / endstate
             } else if (game.checkWin(newBoard, ai)) {
                 return { score: 10 };
+                // return 0 score if tie endstate
             } else if (availSpots.length == 0) {
                 return { score: 0 };
             }
 
+            // if no endstate found, go through all available spots after making move
+
+            // array of all possible moves from here
             let moves = [];
+            // for all available spots create a move
             for (let i = 0; i < availSpots.length; i++) {
                 let move = {};
-                move.cell = availSpots[i];
-                // console.log(move);
-                move.cell.textContent = player.sign;
-
+                console.log ("available spot index is " + availSpots[i]);
+                // move.index = newBoard[availSpots[i]];
+                // make the move
+                console.log("making the move. board is now: ")
+                newBoard[availSpots[i]] = player.sign;
+                console.log(newBoard);
+                // check for endstate after making the move, if not found it will run again
                 if (player == ai) {
-                    let result = minimax(newBoard, human);
-                    move.score = result;
+                    // let result = minimax(newBoard, human);
+                    // move.score = result;
                 } else {
-                    let result = minimax(newBoard, ai);
-                    move.score = result;
+                    // let result = minimax(newBoard, ai);
+                    // move.score = result;
                 }
-                move.cell.textContent = "";
+
+                // unmake the move if no endstate found
+                newBoard[availSpots[i]] = "";
+
+                // add this move to the array of possible moves
                 moves.push(move);
-                if (move.score == 10 || move.score == -10) {
-                console.log(move.score)
-                }
             }
 
-            
-            // let bestMove;
-            // if (player == ai) {
-            //     let bestScore = -10000;
-            //     for (let i = 0; i < moves.length; i++) {
-            //         if (moves[i].score > bestScore) {
-            //             bestScore = moves[i].score;
-            //             bestMove = i;
-            //         }
-            //     }
-            // } else {
-            //     let bestScore = 10000;
-            //     for (let i = 0; i < moves.length; i++) {
-            //         if (moves[i].score < bestScore) {
-            //             bestScore = moves[i].score;
-            //             bestMove = i;
-            //         }
-            //     }
-            // }
-            // return moves[bestMove];
+            let bestMove;
+            if (player == ai) {
+                let bestScore = -10000;
+                for (let i = 0; i < moves.length; i++) {
+                    if (moves[i].score > bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            } else {
+                let bestScore = 10000;
+                for (let i = 0; i < moves.length; i++) {
+                    if (moves[i].score < bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            }
+            return moves[bestMove];
         }
-
-        // let moves = [];
-
-        // for (let i = 0; i < availSpots.length; i++) {
-        //     let move = {};
-        //     move.index = newBoard[availSpots[i]];
-
-        //     newBoard[availSpots[i]] = player.sign;
-
-        //     if (player == ai) {
-        //         let result = minimax(newBoard, human);
-        //         move.score = result.score;
-        //     }
-        //     else {
-        //         let result = minimax (newBoard, ai);
-        //         move.score = result.score;
-        //     }
-
-        //     newBoard[availSpots[i]] = move.index;
-        //     moves.push(move);
-        // }
-
-        // let bestMove;
-        // if (player == ai) {
-        //     let bestScore = -Infinity;
-        //     for (let i=0; i<moves.length; i++){
-        //         if (moves[i].score > bestScore) {
-        //             bestScore = moves[i].score;
-        //             bestMove = i;
-        //         }
-        //     }
-        // } else {
-        //     let bestScore = Infinity;
-        //     for (let i=0; i< moves.length; i++) {
-        //         if (moves[i].score < bestScore) {
-        //             bestScore = moves[i].score;
-        //             bestMove = i;
-        //         }
-        //     }
-        // }
-        // return moves[bestMove];
-
-        // // create an array of all remaining empty cells
-        // const emptyCells = gameBoard.cellArray.filter(
-        //     (n) => n.textContent == ""
-        // );
-        // console.log(emptyCells);
-        // // pick a random cell from emptyCells array and click it
-        // const aiPick = Math.floor(Math.random() * emptyCells.length);
-        // if (game.turn == false && game.gameOver == false) {
-        //     easyAI.aiThinking = true;
-        //     setTimeout(function () {
-        //         easyAI.aiThinking = false;
-        //         emptyCells[aiPick].click();
-        //     }, 750);
-        // }
     };
 
     const scoreBoardNames = () => {
