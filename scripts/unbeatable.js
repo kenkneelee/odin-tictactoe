@@ -26,6 +26,10 @@ const game = (() => {
     thinkingText.textContent = "thinking";
     // win counters
     const winCounters = document.getElementsByClassName("winCounter");
+    const updateWins = () => {
+    winCounters[0].textContent=human.wins;
+    winCounters[1].textContent=ai.wins;
+    };
 
     // function to change whose turn it is
     const switchTurn = function () {
@@ -64,6 +68,7 @@ const game = (() => {
         modal.style.display = "block";
         game.gameOver = true;
         roundWinner.wins++;
+        game.updateWins();
     };
     // check for a game winner, enable resetting game
     const checkWin = function (board, player) {
@@ -115,6 +120,7 @@ const game = (() => {
         checkWin,
         gameOver,
         winnerStuff,
+        updateWins
     };
 })();
 
