@@ -51,23 +51,22 @@ const game = (() => {
         game.gameOver = false;
     });
 
+    const modalContent = document.querySelector(".modal-content");
+    const gameWinner = document.getElementById("winner");
+    const winMsg = document.getElementById("winnerMsg");
+
+    // function to celebrate a round win, pop up the modal
+    const winnerStuff = (roundWinner) => {
+        console.log(roundWinner.name + " wins!");
+        gameWinner.textContent = roundWinner.name;
+        winMsg.textContent = '"' + roundWinner.sayHello() + '"';
+        modalContent.classList.add("modal-content-active");
+        modal.style.display = "block";
+        game.gameOver = true;
+        roundWinner.wins++;
+    };
     // check for a game winner, enable resetting game
     const checkWin = function (board, player) {
-        const modalContent = document.querySelector(".modal-content");
-        const gameWinner = document.getElementById("winner");
-        const winMsg = document.getElementById("winnerMsg");
-
-        // function to celebrate a round win, pop up the modal
-        const winnerStuff = (roundWinner) => {
-            console.log(roundWinner.name + " wins!");
-            gameWinner.textContent = roundWinner.name;
-            winMsg.textContent = '"' + roundWinner.sayHello() + '"';
-            modalContent.classList.add("modal-content-active");
-            modal.style.display = "block";
-            game.gameOver = true;
-            roundWinner.wins++;
-        };
-
         if (
             (board[0] == player.sign &&
                 board[1] == player.sign &&
@@ -115,6 +114,7 @@ const game = (() => {
         switchTurn,
         checkWin,
         gameOver,
+        winnerStuff,
     };
 })();
 
@@ -126,17 +126,18 @@ const gameBoard = (() => {
     for (let i = 0; i < cellArray.length; i++) {
         currentBoard[i] = cellArray[i].textContent;
     }
-    console.log(currentBoard);
+    // console.log(currentBoard);
 
     // function to reset the board
     const newBoard = function () {
         cells.forEach((cell) => {
             cell.textContent = "";
         });
-        currentBoard = [];
+        gameBoard.currentBoard = [];
         for (let i = 0; i < cellArray.length; i++) {
-            currentBoard[i] = "";
+            gameBoard.currentBoard[i] = "";
         }
+        console.log(gameBoard.currentBoard);
         console.log("a");
     };
 
@@ -147,34 +148,63 @@ const gameBoard = (() => {
         return cellArray.every(fullCell);
     };
 
+
     // add functionality to each cell
     cells.forEach((cell) => {
         cell.addEventListener("click", () => {
+            // human turn
             if (
                 game.turn == true &&
                 cell.textContent == "" &&
                 easyAI.aiThinking == false
             ) {
                 console.log("Human plays on cell " + cell.id);
-                currentBoard[cell.id - 1] = human.sign;
-                console.log(currentBoard);
+                gameBoard.currentBoard[cell.id - 1] = human.sign;
+                console.log(gameBoard.currentBoard);
                 cell.textContent = human.sign;
-                game.checkWin(currentBoard, human);
-                if (!game.gameOver) {
+
+
+
+                if (game.checkWin(gameBoard.currentBoard, human) == true) {
+                    game.winnerStuff(human);
+                }
+                // tie game
+                else if (
+                    game.checkWin(gameBoard.currentBoard, human) == false &&
+                    gameBoard.allCellsFull()
+                ) {
+                    console.log("tie game");
+                    game.winnerStuff(ai);
+
+                } else {
                     game.switchTurn();
                     easyAI.aiPlay();
                 }
+
+
+
             } else if (
                 game.turn == false &&
                 cell.textContent == "" &&
                 easyAI.aiThinking == false
             ) {
                 console.log("AI plays on cell " + cell.id);
-                currentBoard[cell.id - 1] = ai.sign;
-                console.log(currentBoard);
+                gameBoard.currentBoard[cell.id - 1] = ai.sign;
+                console.log(gameBoard.currentBoard);
                 cell.textContent = ai.sign;
-                game.checkWin(currentBoard, ai);
-                if (!game.gameOver) {
+
+                if (game.checkWin(gameBoard.currentBoard, ai) == true) {
+                    game.winnerStuff(ai);
+                }
+
+                // tie game
+                else if (
+                    game.checkWin(gameBoard.currentBoard, human) == false &&
+                    gameBoard.allCellsFull()
+                ) {
+                    game.winnerStuff(ai);
+
+                } else {
                     game.switchTurn();
                 }
             }
@@ -193,7 +223,8 @@ const gameBoard = (() => {
 const easyAI = (() => {
     let aiThinking = false;
     const aiPlay = () => {
-        const originalBoard = gameBoard.currentBoard;
+        originalBoard = gameBoard.currentBoard;
+        console.log(originalBoard);
         // var bestSpot = minimax(gameBoard.cellArray, ai);
         bestSpot = minimax(originalBoard, ai);
         console.log(bestSpot);
@@ -275,7 +306,6 @@ const easyAI = (() => {
                 // add this move to the array of possible moves
                 moves.push(move);
             }
-            // console.log(moves);
 
             let bestMove;
             if (player == ai) {
