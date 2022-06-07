@@ -171,7 +171,7 @@ const gameBoard = (() => {
             if (
                 game.turn == true &&
                 cell.textContent == "" &&
-                easyAI.aiThinking == false
+                unbeatableAI.aiThinking == false
             ) {
                 console.log("Human plays on cell " + cell.id);
                 gameBoard.currentBoard[cell.id - 1] = human.sign;
@@ -192,14 +192,14 @@ const gameBoard = (() => {
                 // if no terminal state, proceed to AI turn
                 else {
                     game.switchTurn();
-                    easyAI.aiPlay();
+                    unbeatableAI.aiPlay();
                 }
             }
             // ai turn
             else if (
                 game.turn == false &&
                 cell.textContent == "" &&
-                easyAI.aiThinking == false
+                unbeatableAI.aiThinking == false
             ) {
                 console.log("AI plays on cell " + cell.id);
                 gameBoard.currentBoard[cell.id - 1] = ai.sign;
@@ -231,8 +231,8 @@ const gameBoard = (() => {
     };
 })();
 
-// AI module
-const easyAI = (() => {
+// unbeatable AI module
+const unbeatableAI = (() => {
     let aiThinking = false;
     const aiPlay = () => {
         originalBoard = gameBoard.currentBoard;
@@ -240,9 +240,9 @@ const easyAI = (() => {
         console.log(bestSpot);
 
         if (game.turn == false && game.gameOver == false) {
-            easyAI.aiThinking = true;
+            unbeatableAI.aiThinking = true;
             setTimeout(function () {
-                easyAI.aiThinking = false;
+                unbeatableAI.aiThinking = false;
                 gameBoard.cellArray[bestSpot.index].click();
             }, 750);
         }
