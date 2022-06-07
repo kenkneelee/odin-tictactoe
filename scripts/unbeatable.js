@@ -27,8 +27,8 @@ const game = (() => {
     // win counters
     const winCounters = document.getElementsByClassName("winCounter");
     const updateWins = () => {
-    winCounters[0].textContent=human.wins;
-    winCounters[1].textContent=ai.wins;
+        winCounters[0].textContent = human.wins;
+        winCounters[1].textContent = ai.wins;
     };
 
     // function to change whose turn it is
@@ -70,6 +70,17 @@ const game = (() => {
         roundWinner.wins++;
         game.updateWins();
     };
+
+    // function to declare a round tie, pop up the modal
+    const tieStuff = () => {
+        console.log("Tie!");
+        gameWinner.textContent = "Nobody";
+        modalContent.classList.add("modal-content-active");
+        winMsg.textContent = "";
+        modal.style.display = "block";
+        game.gameOver = true;
+    };
+
     // check for a game winner, enable resetting game
     const checkWin = function (board, player) {
         if (
@@ -120,7 +131,8 @@ const game = (() => {
         checkWin,
         gameOver,
         winnerStuff,
-        updateWins
+        tieStuff,
+        updateWins,
     };
 })();
 
@@ -154,7 +166,6 @@ const gameBoard = (() => {
         return cellArray.every(fullCell);
     };
 
-
     // add functionality to each cell
     cells.forEach((cell) => {
         cell.addEventListener("click", () => {
@@ -169,8 +180,6 @@ const gameBoard = (() => {
                 console.log(gameBoard.currentBoard);
                 cell.textContent = human.sign;
 
-
-
                 if (game.checkWin(gameBoard.currentBoard, human) == true) {
                     game.winnerStuff(human);
                 }
@@ -180,15 +189,11 @@ const gameBoard = (() => {
                     gameBoard.allCellsFull()
                 ) {
                     console.log("tie game");
-                    game.winnerStuff(ai);
-
+                    game.tieStuff();
                 } else {
                     game.switchTurn();
                     easyAI.aiPlay();
                 }
-
-
-
             } else if (
                 game.turn == false &&
                 cell.textContent == "" &&
@@ -208,8 +213,7 @@ const gameBoard = (() => {
                     game.checkWin(gameBoard.currentBoard, human) == false &&
                     gameBoard.allCellsFull()
                 ) {
-                    game.winnerStuff(ai);
-
+                    game.tieStuff();
                 } else {
                     game.switchTurn();
                 }
@@ -230,11 +234,10 @@ const easyAI = (() => {
     let aiThinking = false;
     const aiPlay = () => {
         originalBoard = gameBoard.currentBoard;
-        console.log(originalBoard);
+        // console.log(originalBoard);
         // var bestSpot = minimax(gameBoard.cellArray, ai);
         bestSpot = minimax(originalBoard, ai);
         console.log(bestSpot);
-
         if (game.turn == false && game.gameOver == false) {
             easyAI.aiThinking = true;
             setTimeout(function () {
@@ -243,18 +246,7 @@ const easyAI = (() => {
             }, 750);
         }
 
-        // if (game.turn == false && game.gameOver == false) {
-        //     easyAI.aiThinking = true;
-        //     setTimeout(function () {
-        //         easyAI.aiThinking = false;
-        //         emptyCells[aiPick].click();
-        //     }, 750);
-        // }
-        // console.log(bestSpot);
-
         function minimax(newBoard, player) {
-            // console.log ("ai minimax running. working with board: ");
-            // console.log (newBoard);
             // array of all the available spots
             const availSpotsCheck = function (checkBoard) {
                 let spots = [];
@@ -268,8 +260,6 @@ const easyAI = (() => {
                 }
                 return spots;
             };
-
-            // const availSpots = newBoard.filter((n) => n == "");
             // console.log ("available spots are");
             const availSpots = availSpotsCheck(newBoard);
             // console.log (availSpots);
