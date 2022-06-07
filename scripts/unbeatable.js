@@ -1,35 +1,24 @@
-//player FACTORY===================================
-const playerFactory = function (name, sign) {
+//player factory===================================
+const playerFactory = function (name, sign, winMsg) {
     const sayHello = function () {
-        console.log("Hello! I am " + name + ". I win!");
-        return "Hello! I am " + name + ". I win!";
+        console.log(winMsg);
+        return winMsg;
     };
     this.wins = 0;
     return { name, sign, wins, sayHello };
 };
 
 // Initialize player objects
-const human = playerFactory("Human", "X");
-const ai = playerFactory("AI", "O");
+const human = playerFactory("Human", "X", "That's one for humanity!");
+const ai = playerFactory("AI", "O", "The unbeatable AI wins yet again.");
 
-// game MODULE======================================
+// game module======================================
 const game = (() => {
     // store whether game is over
     let gameOver = false;
+
     // keep track of whether it is human player's turn
     let turn = true;
-    // game title / turn tracker header
-    const header = document.querySelector("h1");
-    const turnText = document.createElement("p");
-    turnText.textContent = "turn";
-    const thinkingText = document.createElement("p");
-    thinkingText.textContent = "thinking";
-    // win counters
-    const winCounters = document.getElementsByClassName("winCounter");
-    const updateWins = () => {
-        winCounters[0].textContent = human.wins;
-        winCounters[1].textContent = ai.wins;
-    };
 
     // function to change whose turn it is
     const switchTurn = function () {
@@ -44,6 +33,27 @@ const game = (() => {
         }
     };
 
+    // game title / turn tracker header
+    const header = document.querySelector("h1");
+    const turnText = document.createElement("p");
+    turnText.textContent = "turn";
+    const thinkingText = document.createElement("p");
+    thinkingText.textContent = "thinking";
+
+    // scoreboard and win counters
+    const scoreBoardNames = () => {
+        const scoreNames = document.getElementsByClassName("scoreName");
+        scoreNames[0].textContent = human.name + ":";
+        scoreNames[1].textContent = ai.name + ":";
+    };
+    scoreBoardNames();
+
+    const winCounters = document.getElementsByClassName("winCounter");
+    const updateWins = () => {
+        winCounters[0].textContent = human.wins;
+        winCounters[1].textContent = ai.wins;
+    };
+
     // reset game button
     const modal = document.getElementById("outcomeModal");
     const replay = document.querySelector(".replay");
@@ -55,11 +65,11 @@ const game = (() => {
         game.gameOver = false;
     });
 
+    // function to celebrate a round win, pop up the modal
     const modalContent = document.querySelector(".modal-content");
     const gameWinner = document.getElementById("winner");
     const winMsg = document.getElementById("winnerMsg");
 
-    // function to celebrate a round win, pop up the modal
     const winnerStuff = (roundWinner) => {
         console.log(roundWinner.name + " wins!");
         gameWinner.textContent = roundWinner.name;
@@ -81,7 +91,7 @@ const game = (() => {
         game.gameOver = true;
     };
 
-    // check for a game winner, enable resetting game
+    // check for a game winner
     const checkWin = function (board, player) {
         if (
             (board[0] == player.sign &&
@@ -109,16 +119,7 @@ const game = (() => {
                 board[4] == player.sign &&
                 board[6] == player.sign)
         ) {
-            // winnerStuff(player);
             return true;
-            // } else if (gameBoard.allCellsFull() && !gameOver) {
-            //     console.log("Tie!");
-            //     gameWinner.textContent = "Nobody";
-            //     modalContent.classList.add("modal-content-active");
-            //     winMsg.textContent = "";
-            //     modal.style.display = "block";
-            //     game.gameOver = true;
-            //     return false;
         } else {
             return false;
         }
@@ -136,7 +137,7 @@ const game = (() => {
     };
 })();
 
-//gameboard MODULE ============================================
+//gameboard module ============================================
 const gameBoard = (() => {
     const cells = document.querySelectorAll(".cell");
     const cellArray = Array.from(cells);
@@ -144,7 +145,6 @@ const gameBoard = (() => {
     for (let i = 0; i < cellArray.length; i++) {
         currentBoard[i] = cellArray[i].textContent;
     }
-    // console.log(currentBoard);
 
     // function to reset the board
     const newBoard = function () {
@@ -155,8 +155,6 @@ const gameBoard = (() => {
         for (let i = 0; i < cellArray.length; i++) {
             gameBoard.currentBoard[i] = "";
         }
-        console.log(gameBoard.currentBoard);
-        console.log("a");
     };
 
     // function to check whether the current cell is full
@@ -180,6 +178,7 @@ const gameBoard = (() => {
                 console.log(gameBoard.currentBoard);
                 cell.textContent = human.sign;
 
+                // check for terminal state
                 if (game.checkWin(gameBoard.currentBoard, human) == true) {
                     game.winnerStuff(human);
                 }
@@ -190,11 +189,15 @@ const gameBoard = (() => {
                 ) {
                     console.log("tie game");
                     game.tieStuff();
-                } else {
+                }
+                // if no terminal state, proceed to AI turn
+                else {
                     game.switchTurn();
                     easyAI.aiPlay();
                 }
-            } else if (
+            }
+            // ai turn
+            else if (
                 game.turn == false &&
                 cell.textContent == "" &&
                 easyAI.aiThinking == false
@@ -204,13 +207,13 @@ const gameBoard = (() => {
                 console.log(gameBoard.currentBoard);
                 cell.textContent = ai.sign;
 
+                // check for terminal state
                 if (game.checkWin(gameBoard.currentBoard, ai) == true) {
                     game.winnerStuff(ai);
                 }
-
                 // tie game
                 else if (
-                    game.checkWin(gameBoard.currentBoard, human) == false &&
+                    game.checkWin(gameBoard.currentBoard, ai) == false &&
                     gameBoard.allCellsFull()
                 ) {
                     game.tieStuff();
@@ -234,10 +237,10 @@ const easyAI = (() => {
     let aiThinking = false;
     const aiPlay = () => {
         originalBoard = gameBoard.currentBoard;
-        // console.log(originalBoard);
-        // var bestSpot = minimax(gameBoard.cellArray, ai);
         bestSpot = minimax(originalBoard, ai);
+
         console.log(bestSpot);
+
         if (game.turn == false && game.gameOver == false) {
             easyAI.aiThinking = true;
             setTimeout(function () {
@@ -262,7 +265,6 @@ const easyAI = (() => {
             };
             // console.log ("available spots are");
             const availSpots = availSpotsCheck(newBoard);
-            // console.log (availSpots);
             // human is minimizing player / endstate
             if (game.checkWin(newBoard, human)) {
                 return { score: -10 };
@@ -275,19 +277,15 @@ const easyAI = (() => {
             }
 
             // if no endstate found, go through all available spots after making move
-
             // array of all possible moves from here
             let moves = [];
             // for all available spots create a move
             for (let i = 0; i < availSpots.length; i++) {
                 let move = {};
-                // console.log ("available spot index is " + availSpots[i]);
                 move.index = availSpots[i];
                 // make the move
-                // console.log("making the move. board is now: ")
                 newBoard[availSpots[i]] = player.sign;
-                // console.log(newBoard);
-                // check for endstate after making the move, if not found it will run again
+                // check for endstate after making the move, if not found it will run callback
                 if (player == ai) {
                     let result = minimax(newBoard, human);
                     move.score = result.score;
@@ -295,10 +293,8 @@ const easyAI = (() => {
                     let result = minimax(newBoard, ai);
                     move.score = result.score;
                 }
-
                 // unmake the move if no endstate found
                 newBoard[availSpots[i]] = "";
-
                 // add this move to the array of possible moves
                 moves.push(move);
             }
@@ -325,12 +321,6 @@ const easyAI = (() => {
         }
     };
 
-    const scoreBoardNames = () => {
-        const scoreNames = document.getElementsByClassName("scoreName");
-        scoreNames[0].textContent = human.name + ":";
-        scoreNames[1].textContent = ai.name + ":";
-    };
-    scoreBoardNames();
     return {
         aiPlay,
         aiThinking,
