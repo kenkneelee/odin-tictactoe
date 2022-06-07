@@ -11,21 +11,21 @@ const playerFactory = function (name, sign, winMsg) {
 // IIFE to setup players and difficulty
 
 const setup = (() => {
-    const human = playerFactory(
-        prompt("Please enter your name", "Dumbledore"),
-        prompt("Please enter your sign", "X"),
-        prompt("Please enter your victory message", "Woohoo!")
-    );
+    const human = playerFactory("Human", "X", "That's one for humanity!");
     const ai = playerFactory("AI", "O", "The unbeatable AI wins yet again.");
+    
+    // const setupModal = document.getElementById("setupModal");
+    // const setupModalContent = document.querySelector(".setupModal-content");
+
+    // setupModal.style.display = "block";
+    // setupModal.style.display = "none";
+
 
     return {
         human, ai
     }
 })();
 
-// Initialize player objects
-// const human = playerFactory("Human", "X", "That's one for humanity!");
-// const ai = playerFactory("AI", "O", "The unbeatable AI wins yet again.");
 
 // game module======================================
 const game = (() => {
@@ -192,6 +192,8 @@ const gameBoard = (() => {
                 gameBoard.currentBoard[cell.id - 1] = setup.human.sign;
                 // console.log(gameBoard.currentBoard);
                 cell.textContent = setup.human.sign;
+                cell.classList.remove("redCell");
+                cell.classList.add("blueCell");
 
                 // check for terminal state
                 if (game.checkWin(gameBoard.currentBoard, setup.human) == true) {
@@ -220,7 +222,8 @@ const gameBoard = (() => {
                 gameBoard.currentBoard[cell.id - 1] = setup.ai.sign;
                 // console.log(gameBoard.currentBoard);
                 cell.textContent = setup.ai.sign;
-
+                cell.classList.remove("blueCell");
+                cell.classList.add("redCell");
                 // check for terminal state
                 if (game.checkWin(gameBoard.currentBoard, setup.ai) == true) {
                     game.winnerStuff(setup.ai);
