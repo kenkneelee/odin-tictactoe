@@ -8,9 +8,24 @@ const playerFactory = function (name, sign, winMsg) {
     return { name, sign, wins, sayHello };
 };
 
+// IIFE to setup players and difficulty
+
+const setup = (() => {
+    const human = playerFactory(
+        prompt("Please enter your name", "Dumbledore"),
+        prompt("Please enter your sign", "X"),
+        prompt("Please enter your victory message", "Woohoo!")
+    );
+    const ai = playerFactory("AI", "O", "The unbeatable AI wins yet again.");
+
+    return {
+        human, ai
+    }
+})();
+
 // Initialize player objects
-const human = playerFactory("Human", "X", "That's one for humanity!");
-const ai = playerFactory("AI", "O", "The unbeatable AI wins yet again.");
+// const human = playerFactory("Human", "X", "That's one for humanity!");
+// const ai = playerFactory("AI", "O", "The unbeatable AI wins yet again.");
 
 // game module======================================
 const game = (() => {
@@ -24,11 +39,11 @@ const game = (() => {
     const switchTurn = function () {
         if (this.turn) {
             this.turn = false;
-            header.textContent = ai.name + "'s";
+            header.textContent = setup.ai.name + "'s";
             header.appendChild(thinkingText);
         } else {
             this.turn = true;
-            header.textContent = human.name + "'s";
+            header.textContent = setup.human.name + "'s";
             header.appendChild(turnText);
         }
     };
@@ -43,15 +58,15 @@ const game = (() => {
     // scoreboard and win counters
     const scoreBoardNames = () => {
         const scoreNames = document.getElementsByClassName("scoreName");
-        scoreNames[0].textContent = human.name + ":";
-        scoreNames[1].textContent = ai.name + ":";
+        scoreNames[0].textContent = setup.human.name + ":";
+        scoreNames[1].textContent = setup.ai.name + ":";
     };
     scoreBoardNames();
 
     const winCounters = document.getElementsByClassName("winCounter");
     const updateWins = () => {
-        winCounters[0].textContent = human.wins;
-        winCounters[1].textContent = ai.wins;
+        winCounters[0].textContent = setup.human.wins;
+        winCounters[1].textContent = setup.ai.wins;
     };
 
     // reset game button
@@ -174,17 +189,17 @@ const gameBoard = (() => {
                 unbeatableAI.aiThinking == false
             ) {
                 console.log("Human plays on cell " + cell.id);
-                gameBoard.currentBoard[cell.id - 1] = human.sign;
+                gameBoard.currentBoard[cell.id - 1] = setup.human.sign;
                 // console.log(gameBoard.currentBoard);
-                cell.textContent = human.sign;
+                cell.textContent = setup.human.sign;
 
                 // check for terminal state
-                if (game.checkWin(gameBoard.currentBoard, human) == true) {
-                    game.winnerStuff(human);
+                if (game.checkWin(gameBoard.currentBoard, setup.human) == true) {
+                    game.winnerStuff(setup.human);
                 }
                 // tie game
                 else if (
-                    game.checkWin(gameBoard.currentBoard, human) == false &&
+                    game.checkWin(gameBoard.currentBoard, setup.human) == false &&
                     gameBoard.allCellsFull()
                 ) {
                     game.tieStuff();
@@ -202,17 +217,17 @@ const gameBoard = (() => {
                 unbeatableAI.aiThinking == false
             ) {
                 console.log("AI plays on cell " + cell.id);
-                gameBoard.currentBoard[cell.id - 1] = ai.sign;
+                gameBoard.currentBoard[cell.id - 1] = setup.ai.sign;
                 // console.log(gameBoard.currentBoard);
-                cell.textContent = ai.sign;
+                cell.textContent = setup.ai.sign;
 
                 // check for terminal state
-                if (game.checkWin(gameBoard.currentBoard, ai) == true) {
-                    game.winnerStuff(ai);
+                if (game.checkWin(gameBoard.currentBoard, setup.ai) == true) {
+                    game.winnerStuff(setup.ai);
                 }
                 // tie game
                 else if (
-                    game.checkWin(gameBoard.currentBoard, ai) == false &&
+                    game.checkWin(gameBoard.currentBoard, setup.ai) == false &&
                     gameBoard.allCellsFull()
                 ) {
                     game.tieStuff();
@@ -236,7 +251,7 @@ const unbeatableAI = (() => {
     let aiThinking = false;
     const aiPlay = () => {
         originalBoard = gameBoard.currentBoard;
-        bestSpot = minimax(originalBoard, ai);
+        bestSpot = minimax(originalBoard, setup.ai);
         console.log(bestSpot);
 
         if (game.turn == false && game.gameOver == false) {
@@ -253,8 +268,8 @@ const unbeatableAI = (() => {
                 let spots = [];
                 for (let i = 0; i < checkBoard.length; i++) {
                     if (
-                        checkBoard[i] !== human.sign &&
-                        checkBoard[i] !== ai.sign
+                        checkBoard[i] !== setup.human.sign &&
+                        checkBoard[i] !== setup.ai.sign
                     ) {
                         spots.push(i);
                     }
@@ -264,10 +279,10 @@ const unbeatableAI = (() => {
             // console.log ("available spots are");
             const availSpots = availSpotsCheck(newBoard);
             // human is minimizing player / endstate
-            if (game.checkWin(newBoard, human)) {
+            if (game.checkWin(newBoard, setup.human)) {
                 return { score: -10 };
                 // ai is maximizing player / endstate
-            } else if (game.checkWin(newBoard, ai)) {
+            } else if (game.checkWin(newBoard, setup.ai)) {
                 return { score: 10 };
                 // return 0 score if tie endstate
             } else if (availSpots.length == 0) {
@@ -284,11 +299,11 @@ const unbeatableAI = (() => {
                 // make the move
                 newBoard[availSpots[i]] = player.sign;
                 // check for endstate after making the move, if not found it will run callback
-                if (player == ai) {
-                    let result = minimax(newBoard, human);
+                if (player == setup.ai) {
+                    let result = minimax(newBoard, setup.human);
                     move.score = result.score;
                 } else {
-                    let result = minimax(newBoard, ai);
+                    let result = minimax(newBoard, setup.ai);
                     move.score = result.score;
                 }
                 // unmake the move if no endstate found
@@ -298,7 +313,7 @@ const unbeatableAI = (() => {
             }
 
             let bestMove;
-            if (player == ai) {
+            if (player == setup.ai) {
                 let bestScore = -10000;
                 for (let i = 0; i < moves.length; i++) {
                     if (moves[i].score > bestScore) {
