@@ -175,7 +175,7 @@ const gameBoard = (() => {
             ) {
                 console.log("Human plays on cell " + cell.id);
                 gameBoard.currentBoard[cell.id - 1] = human.sign;
-                console.log(gameBoard.currentBoard);
+                // console.log(gameBoard.currentBoard);
                 cell.textContent = human.sign;
 
                 // check for terminal state
@@ -187,7 +187,6 @@ const gameBoard = (() => {
                     game.checkWin(gameBoard.currentBoard, human) == false &&
                     gameBoard.allCellsFull()
                 ) {
-                    console.log("tie game");
                     game.tieStuff();
                 }
                 // if no terminal state, proceed to AI turn
@@ -204,7 +203,7 @@ const gameBoard = (() => {
             ) {
                 console.log("AI plays on cell " + cell.id);
                 gameBoard.currentBoard[cell.id - 1] = ai.sign;
-                console.log(gameBoard.currentBoard);
+                // console.log(gameBoard.currentBoard);
                 cell.textContent = ai.sign;
 
                 // check for terminal state
@@ -238,7 +237,6 @@ const easyAI = (() => {
     const aiPlay = () => {
         originalBoard = gameBoard.currentBoard;
         bestSpot = minimax(originalBoard, ai);
-
         console.log(bestSpot);
 
         if (game.turn == false && game.gameOver == false) {
