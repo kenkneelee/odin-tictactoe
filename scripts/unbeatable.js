@@ -14,10 +14,10 @@ const setup = (() => {
     const human = playerFactory("Human", "X", "That's one for humanity!");
     const ai = playerFactory("AI", "O", "The unbeatable AI wins yet again.");
     
-    // const setupModal = document.getElementById("setupModal");
-    // const setupModalContent = document.querySelector(".setupModal-content");
+    const setupModal = document.getElementById("setupModal");
+    const setupModalContent = document.querySelector(".setupModal-content");
 
-    // setupModal.style.display = "block";
+    setupModal.style.display = "block";
     // setupModal.style.display = "none";
 
 
@@ -81,7 +81,7 @@ const game = (() => {
     });
 
     // function to celebrate a round win, pop up the modal
-    const modalContent = document.querySelector(".modal-content");
+    const modalContent = document.querySelector(".outcomeModal-content");
     const gameWinner = document.getElementById("winner");
     const winMsg = document.getElementById("winnerMsg");
 

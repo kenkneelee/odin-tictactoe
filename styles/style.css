@@ -11,9 +11,40 @@ body {
     background-image: url("https://i.pinimg.com/originals/fb/a7/e9/fba7e90aae11ba301fe88f9da2a35875.jpg");
     background-size: contain;
     background-attachment: fixed;
-    display:flex;
+    display: flex;
     flex-direction: column;
-    height:100vh;
+    height: 100vh;
+}
+
+.characterSetup {
+    display: flex;
+    width: 100%;
+}
+
+.icon {
+    margin: 0;
+    padding: 0;
+    border-radius: 20%;
+    background-color: rgba(136, 136, 136, 0.27);
+    margin: 1rem;
+}
+
+.humanIcon:hover {
+    background-color: rgba(0, 255, 255, 0.6)
+}
+.aiIcon:hover {
+    background-color: rgba(255, 0, 0, 0.6);
+}
+
+.humanSetup, .aiSetup {
+    text-align: center;
+    width: 50%;
+}
+
+.humanIcons {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
 }
 
 /* The Modal (background) */
@@ -59,8 +90,8 @@ body {
 }
 
 main {
-    flex-grow:1;
-    display:flex;
+    flex-grow: 1;
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -75,8 +106,8 @@ main {
     border-radius: 40px;
     color: aliceblue;
     height: 60%;
-    width:70%;
-    padding:2rem;
+    width: 70%;
+    padding: 2rem;
 }
 
 .cell {
@@ -93,26 +124,19 @@ main {
 
 .blueCell {
     color: #fff;
-    text-shadow:
-      0 0 10px #fff,
-      0 0 40px #0ff,
-      0 0 80px #0ff,
-      0 0 90px #0ff;
+    text-shadow: 0 0 10px #fff, 0 0 40px #0ff, 0 0 80px #0ff, 0 0 90px #0ff;
 }
 
 .redCell {
     color: #fff;
-    text-shadow:
-      0 0 10px #fff,
-      0 0 40px rgb(255, 0, 0),
-      0 0 80px rgb(255, 0, 0),
-      0 0 90px rgb(255, 0, 0);
+    text-shadow: 0 0 10px #fff, 0 0 40px rgb(255, 0, 0), 0 0 80px rgb(255, 0, 0),
+        0 0 90px rgb(255, 0, 0);
 }
 
 .scoreboard {
-    color:aliceblue;
-    width:70%;
-    display:flex;
+    color: aliceblue;
+    width: 70%;
+    display: flex;
     justify-content: space-between;
     align-items: center;
 }
@@ -121,9 +145,8 @@ main {
     text-align: center;
     margin-top: 1rem;
     font-size: 1em;
-    width:100%;
+    width: 100%;
 }
-
 
 button {
     display: block;
@@ -135,16 +158,15 @@ header,
 footer {
     color: aliceblue;
     background-color: rgba(0, 174, 255, 0.125);
-    width:80%;
-    margin:auto;
-
+    width: 80%;
+    margin: auto;
 }
 
 header {
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
-    height:10rem;
-    display:flex;
+    height: 10rem;
+    display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
@@ -164,7 +186,6 @@ footer {
 footer p {
     padding: 1rem;
 }
-
 
 @media (min-width: 1080px) {
     .board {
