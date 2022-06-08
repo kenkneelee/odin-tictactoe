@@ -23,18 +23,27 @@
                     <div class="humanSetup">
                         <h3>Human:</h3>
                         <div class="humanIcons">
-                            <img src="images/caveman.svg" class="icon humanIcon" />
-                            <img src="images/running-ninja.svg" class="icon humanIcon" />
-                            <img src="images/swordman.svg" class="icon humanIcon" />
-                            <img src="images/mounted-knight.svg" class="icon humanIcon" />
+                            <input type="radio" id="caveman" name="humanChoice" value="caveman">
+                            <label for="caveman"><img src="images/caveman.svg" class="icon humanIcon" /></label>
+
+                            <input type="radio" id="ninja" name="humanChoice" value="ninja">
+                            <label for="ninja"><img src="images/running-ninja.svg" class="icon humanIcon" /></label>
+
+                            <input type="radio" id="soldier" name="humanChoice" value="soldier">
+                            <label for="soldier"><img src="images/swordman.svg" class="icon humanIcon" /></label>
+
+                            <input type="radio" id="knight" name="humanChoice" value="knight">
+                            <label for="knight"><img src="images/mounted-knight.svg" class="icon humanIcon" /></label>
                         </div>
                     </div>
 
                     <div class="aiSetup">
-                        <h3>AI</h3>
+                        <h3>AI Difficulty:</h3>
                         <div class="humanIcons">
-                            <img src="images/baby-face.svg" class="icon aiIcon" />
-                            <img src="images/skull-crossed-bones.svg" class="icon aiIcon" />
+                            <input type="radio" id="easy" name="aiChoice" value="easy">
+                            <label for="easy"><img src="images/baby-face.svg" class="icon aiIcon" /></label>
+                            <input type="radio" id="impossible" name="aiChoice" value="impossible">
+                            <label for="impossible"><img src="images/skull-crossed-bones.svg" class="icon aiIcon" /></label>
                         </div>
                     </div>
                 </div>

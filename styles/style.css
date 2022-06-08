@@ -18,7 +18,22 @@ body {
 
 .characterSetup {
     display: flex;
+    justify-content: space-evenly;
     width: 100%;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+input[name="humanChoice"]:checked + label img {
+    background-color: rgba(0, 255, 255, 0.6);
+    border-radius: 20%;
+}
+
+input[name="aiChoice"]:checked + label img {
+    background-color: rgba(255, 0, 0, 0.6);
+    border-radius: 20%;
 }
 
 .icon {
@@ -26,23 +41,24 @@ body {
     padding: 0;
     border-radius: 20%;
     background-color: rgba(136, 136, 136, 0.27);
-    margin: 1rem;
+    margin: 10%;
 }
 
 .humanIcon:hover {
-    background-color: rgba(0, 255, 255, 0.6)
+    background-color: rgba(0, 255, 255, 0.6);
 }
 .aiIcon:hover {
     background-color: rgba(255, 0, 0, 0.6);
 }
 
-.humanSetup, .aiSetup {
+.humanSetup,
+.aiSetup {
     text-align: center;
     width: 50%;
 }
 
 .humanIcons {
-    display:grid;
+    display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
 }
@@ -190,6 +206,10 @@ footer p {
 @media (min-width: 1080px) {
     .board {
         height: 60%;
+        width: 40%;
+    }
+    .setupModal-content {
+        margin: 5% auto;
         width: 40%;
     }
 }
