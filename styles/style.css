@@ -132,6 +132,8 @@ main {
     justify-content: center;
     align-items: center;
     font-size: clamp(1rem, 15vw, 4rem);
+    background-repeat: no-repeat;
+    background-position:center;
 }
 
 .cell:hover {

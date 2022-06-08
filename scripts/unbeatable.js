@@ -1,11 +1,11 @@
 //player factory===================================
-const playerFactory = function (name, sign, winMsg) {
+const playerFactory = function (name, sign, winMsg,src) {
     const sayHello = function () {
         console.log(winMsg);
         return winMsg;
     };
     this.wins = 0;
-    return { name, sign, wins, sayHello };
+    return { name, sign, wins,src, sayHello };
 };
 
 // IIFE to setup players and difficulty
@@ -28,31 +28,37 @@ const setup = (() => {
                 name: "caveman",
                 sign: "X",
                 winMessage: "oogabooga!",
+                src: "images/bone-mace.svg",
             },
             {
                 name: "ninja",
                 sign: "X",
                 winMessage: "...",
+                src:"images/shuriken.svg",
             },
             {
                 name: "soldier",
                 sign: "X",
                 winMessage: "To victory!",
+                src:"images/sword-brandish.svg",
             },
             {
                 name: "knight",
                 sign: "X",
                 winMessage: "Huzzah!",
+                src:"images/stone-spear.svg",
             },
             {
                 name: "easy",
                 sign: "O",
                 winMessage: "Waaaaaaa!!",
+                src:"images/baby-face-bg.svg",
             },
             {
                 name: "impossible",
                 sign: "O",
                 winMessage: "The unbeatable AI prevails yet again!",
+                src:"images/skull-crossed-bones-bg.svg",
             },
         ];
         // initialize human player object
@@ -67,8 +73,9 @@ const setup = (() => {
         const humanName = humanObject.name;
         const humanSign = humanObject.sign;
         const humanMessage = humanObject.winMessage;
+        const humanSrc = humanObject.src;
 
-        setup.human = playerFactory(humanName, humanSign, humanMessage);
+        setup.human = playerFactory(humanName, humanSign, humanMessage, humanSrc);
 
         // initialize ai player object
         const aiObject = possiblePlayers.find(
@@ -80,8 +87,9 @@ const setup = (() => {
         const aiName = aiObject.name;
         const aiSign = aiObject.sign;
         const aiMessage = aiObject.winMessage;
+        const aiSrc = aiObject.src;
 
-        setup.ai = playerFactory(aiName, aiSign, aiMessage);
+        setup.ai = playerFactory(aiName, aiSign, aiMessage, aiSrc);
         scoreBoardNames();
     });
 
@@ -228,6 +236,7 @@ const gameBoard = (() => {
     const newBoard = function () {
         cells.forEach((cell) => {
             cell.textContent = "";
+            cell.style.backgroundImage = "none";
         });
         gameBoard.currentBoard = [];
         for (let i = 0; i < cellArray.length; i++) {
@@ -255,6 +264,7 @@ const gameBoard = (() => {
                 gameBoard.currentBoard[cell.id - 1] = setup.human.sign;
                 // console.log(gameBoard.currentBoard);
                 cell.textContent = setup.human.sign;
+                cell.style.backgroundImage = "url('" + setup.human.src + "')";
                 cell.classList.remove("redCell");
                 cell.classList.add("blueCell");
 
@@ -288,6 +298,8 @@ const gameBoard = (() => {
                 gameBoard.currentBoard[cell.id - 1] = setup.ai.sign;
                 // console.log(gameBoard.currentBoard);
                 cell.textContent = setup.ai.sign;
+                cell.style.backgroundImage = "url('" + setup.ai.src + "')";
+                cell.style.backgroundOpacity = 0.2;
                 cell.classList.remove("blueCell");
                 cell.classList.add("redCell");
                 // check for terminal state
