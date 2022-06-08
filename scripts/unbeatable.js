@@ -18,8 +18,23 @@ const setup = (() => {
     const setupModalContent = document.querySelector(".setupModal-content");
 
     setupModal.style.display = "block";
-    // setupModal.style.display = "none";
 
+    const startGame = document.getElementById("start");
+    startGame.addEventListener("click", () => {
+    setupModal.style.display = "none";
+    const humanName = document.querySelector('input[name="humanChoice"]:checked').value;
+    setup.human= playerFactory (humanName, "X", "wooo");
+    setup.ai = playerFactory ("AI", "O", "ehehehehe");
+    scoreBoardNames();
+
+    })
+
+        // scoreboard and win counters
+        const scoreBoardNames = () => {
+            const scoreNames = document.getElementsByClassName("scoreName");
+            scoreNames[0].textContent = setup.human.name + ":";
+            scoreNames[1].textContent = setup.ai.name + ":";
+        };
 
     return {
         human, ai
@@ -55,13 +70,6 @@ const game = (() => {
     const thinkingText = document.createElement("p");
     thinkingText.textContent = "thinking";
 
-    // scoreboard and win counters
-    const scoreBoardNames = () => {
-        const scoreNames = document.getElementsByClassName("scoreName");
-        scoreNames[0].textContent = setup.human.name + ":";
-        scoreNames[1].textContent = setup.ai.name + ":";
-    };
-    scoreBoardNames();
 
     const winCounters = document.getElementsByClassName("winCounter");
     const updateWins = () => {
