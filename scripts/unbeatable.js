@@ -13,7 +13,7 @@ const playerFactory = function (name, sign, winMsg) {
 const setup = (() => {
     const human = playerFactory("Human", "X", "That's one for humanity!");
     const ai = playerFactory("AI", "O", "The unbeatable AI wins yet again.");
-    
+
     const setupModal = document.getElementById("setupModal");
     const setupModalContent = document.querySelector(".setupModal-content");
 
@@ -21,26 +21,82 @@ const setup = (() => {
 
     const startGame = document.getElementById("start");
     startGame.addEventListener("click", () => {
-    setupModal.style.display = "none";
-    const humanName = document.querySelector('input[name="humanChoice"]:checked').value;
-    setup.human= playerFactory (humanName, "X", "wooo");
-    setup.ai = playerFactory ("AI", "O", "ehehehehe");
-    scoreBoardNames();
+        setupModal.style.display = "none";
 
-    })
+        const possiblePlayers = [
+            {
+                name: "caveman",
+                sign: "X",
+                winMessage: "oogabooga!",
+            },
+            {
+                name: "ninja",
+                sign: "X",
+                winMessage: "...",
+            },
+            {
+                name: "soldier",
+                sign: "X",
+                winMessage: "To victory!",
+            },
+            {
+                name: "knight",
+                sign: "X",
+                winMessage: "Huzzah!",
+            },
+            {
+                name: "easy",
+                sign: "O",
+                winMessage: "Waaaaaaa!!",
+            },
+            {
+                name: "impossible",
+                sign: "O",
+                winMessage: "The unbeatable AI prevails yet again!",
+            },
+        ];
+        // initialize human player object
+        const humanObject = possiblePlayers.find(
+            (player) =>
+                player.name ==
+                document.querySelector('input[name="humanChoice"]:checked')
+                    .value
+        );
+        console.log(humanObject);
 
-        // scoreboard and win counters
-        const scoreBoardNames = () => {
-            const scoreNames = document.getElementsByClassName("scoreName");
-            scoreNames[0].textContent = setup.human.name + ":";
-            scoreNames[1].textContent = setup.ai.name + ":";
-        };
+        const humanName = humanObject.name;
+        const humanSign = humanObject.sign;
+        const humanMessage = humanObject.winMessage;
+
+        setup.human = playerFactory(humanName, humanSign, humanMessage);
+
+        // initialize ai player object
+        const aiObject = possiblePlayers.find(
+            (player) =>
+                player.name ==
+                document.querySelector('input[name="aiChoice"]:checked').value
+        );
+        console.log(aiObject);
+        const aiName = aiObject.name;
+        const aiSign = aiObject.sign;
+        const aiMessage = aiObject.winMessage;
+
+        setup.ai = playerFactory(aiName, aiSign, aiMessage);
+        scoreBoardNames();
+    });
+
+    // scoreboard and win counters
+    const scoreBoardNames = () => {
+        const scoreNames = document.getElementsByClassName("scoreName");
+        scoreNames[0].textContent = setup.human.name + ":";
+        scoreNames[1].textContent = setup.ai.name + ":";
+    };
 
     return {
-        human, ai
-    }
+        human,
+        ai,
+    };
 })();
-
 
 // game module======================================
 const game = (() => {
@@ -69,7 +125,6 @@ const game = (() => {
     turnText.textContent = "turn";
     const thinkingText = document.createElement("p");
     thinkingText.textContent = "thinking";
-
 
     const winCounters = document.getElementsByClassName("winCounter");
     const updateWins = () => {
@@ -204,12 +259,15 @@ const gameBoard = (() => {
                 cell.classList.add("blueCell");
 
                 // check for terminal state
-                if (game.checkWin(gameBoard.currentBoard, setup.human) == true) {
+                if (
+                    game.checkWin(gameBoard.currentBoard, setup.human) == true
+                ) {
                     game.winnerStuff(setup.human);
                 }
                 // tie game
                 else if (
-                    game.checkWin(gameBoard.currentBoard, setup.human) == false &&
+                    game.checkWin(gameBoard.currentBoard, setup.human) ==
+                        false &&
                     gameBoard.allCellsFull()
                 ) {
                     game.tieStuff();
