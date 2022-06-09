@@ -1,18 +1,18 @@
 //player factory===================================
-const playerFactory = function (name, sign, winMsg,src) {
+const playerFactory = function (name, sign, winMsg, src) {
     const sayHello = function () {
         console.log(winMsg);
         return winMsg;
     };
     this.wins = 0;
-    return { name, sign, wins,src, sayHello };
+    return { name, sign, wins, src, sayHello };
 };
 
 // IIFE to setup players and difficulty
 
 const setup = (() => {
-    const human = playerFactory("Human", "X", "That's one for humanity!");
-    const ai = playerFactory("AI", "O", "The unbeatable AI wins yet again.");
+    const human = playerFactory("Human", "X", "Human wins.");
+    const ai = playerFactory("AI", "O", "AI wins.");
 
     const setupModal = document.getElementById("setupModal");
     const setupModalContent = document.querySelector(".setupModal-content");
@@ -22,88 +22,99 @@ const setup = (() => {
     const startGame = document.getElementById("start");
 
     function atLeastOneHuman() {
-        return (document.querySelectorAll('input[name="humanChoice"]:checked')
-        .length > 0);
+        return (
+            document.querySelectorAll('input[name="humanChoice"]:checked')
+                .length > 0
+        );
     }
 
     function atLeastOneAI() {
-        return (document.querySelectorAll('input[name="aiChoice"]:checked')
-        .length > 0);
+        return (
+            document.querySelectorAll('input[name="aiChoice"]:checked').length >
+            0
+        );
     }
 
     startGame.addEventListener("click", () => {
-        if (atLeastOneHuman()==true && atLeastOneAI()==true) {
-        setupModal.style.display = "none";
+        if (atLeastOneHuman() == true && atLeastOneAI() == true) {
+            setupModal.style.display = "none";
 
-        const possiblePlayers = [
-            {
-                name: "caveman",
-                sign: "X",
-                winMessage: "oogabooga!",
-                src: "images/bone-mace.svg",
-            },
-            {
-                name: "ninja",
-                sign: "X",
-                winMessage: "...",
-                src:"images/shuriken.svg",
-            },
-            {
-                name: "soldier",
-                sign: "X",
-                winMessage: "To victory!",
-                src:"images/sword-brandish.svg",
-            },
-            {
-                name: "knight",
-                sign: "X",
-                winMessage: "Huzzah!",
-                src:"images/stone-spear.svg",
-            },
-            {
-                name: "Easy AI",
-                sign: "O",
-                winMessage: "Waaaaaaa!!",
-                src:"images/baby-face-bg.svg",
-            },
-            {
-                name: "Unbeatable AI",
-                sign: "O",
-                winMessage: "The unbeatable AI prevails yet again!",
-                src:"images/skull-crossed-bones-bg.svg",
-            },
-        ];
-        // initialize human player object
-        const humanObject = possiblePlayers.find(
-            (player) =>
-                player.name ==
-                document.querySelector('input[name="humanChoice"]:checked')
-                    .value
-        );
-        console.log(humanObject);
+            const possiblePlayers = [
+                {
+                    name: "Luke",
+                    sign: "X",
+                    winMessage: "Your overconfidence is your weakness.",
+                    src: "images/icons8-luke-skywalker.svg",
+                },
+                {
+                    name: "Yoda",
+                    sign: "X",
+                    winMessage: "The greatest teacher, failure is.",
+                    src: "images/icons8-yoda.svg",
+                },
+                {
+                    name: "R2D2",
+                    sign: "X",
+                    winMessage: "Beep beep boop boop!",
+                    src: "images/icons8-r2d2.svg",
+                },
+                {
+                    name: "C-3PO",
+                    sign: "X",
+                    winMessage: "Sometimes, I just don't understand human behaviour.",
+                    src: "images/icons8-c-3po.svg",
+                },
+                {
+                    name: "Easy AI",
+                    sign: "O",
+                    winMessage: "Rebel scum.",
+                    src: "images/icons8-stormtrooper.svg",
+                },
+                {
+                    name: "Unbeatable AI",
+                    sign: "O",
+                    winMessage: "I am your father now.",
+                    src: "images/icons8-darth-vader.svg",
+                },
+            ];
+            // initialize human player object
+            const humanObject = possiblePlayers.find(
+                (player) =>
+                    player.name ==
+                    document.querySelector('input[name="humanChoice"]:checked')
+                        .value
+            );
+            console.log(humanObject);
 
-        const humanName = humanObject.name;
-        const humanSign = humanObject.sign;
-        const humanMessage = humanObject.winMessage;
-        const humanSrc = humanObject.src;
+            const humanName = humanObject.name;
+            const humanSign = humanObject.sign;
+            const humanMessage = humanObject.winMessage;
+            const humanSrc = humanObject.src;
 
-        setup.human = playerFactory(humanName, humanSign, humanMessage, humanSrc);
+            setup.human = playerFactory(
+                humanName,
+                humanSign,
+                humanMessage,
+                humanSrc
+            );
 
-        // initialize ai player object
-        const aiObject = possiblePlayers.find(
-            (player) =>
-                player.name ==
-                document.querySelector('input[name="aiChoice"]:checked').value
-        );
-        console.log(aiObject);
-        const aiName = aiObject.name;
-        const aiSign = aiObject.sign;
-        const aiMessage = aiObject.winMessage;
-        const aiSrc = aiObject.src;
+            // initialize ai player object
+            const aiObject = possiblePlayers.find(
+                (player) =>
+                    player.name ==
+                    document.querySelector('input[name="aiChoice"]:checked')
+                        .value
+            );
+            console.log(aiObject);
+            const aiName = aiObject.name;
+            const aiSign = aiObject.sign;
+            const aiMessage = aiObject.winMessage;
+            const aiSrc = aiObject.src;
 
-        setup.ai = playerFactory(aiName, aiSign, aiMessage, aiSrc);
-        scoreBoardNames();
-    }});
+            setup.ai = playerFactory(aiName, aiSign, aiMessage, aiSrc);
+            scoreBoardNames();
+        }
+    });
     // scoreboard and win counters
     const scoreBoardNames = () => {
         const scoreNames = document.getElementsByClassName("scoreName");
@@ -297,11 +308,10 @@ const gameBoard = (() => {
                 // if no terminal state, proceed to AI turn
                 else {
                     game.switchTurn();
-                    if (setup.ai.name=="Easy AI") {
+                    if (setup.ai.name == "Easy AI") {
                         easyAI.aiPlay();
-                    }
-                    else {
-                    unbeatableAI.aiPlay();
+                    } else {
+                        unbeatableAI.aiPlay();
                     }
                 }
             }
@@ -437,7 +447,6 @@ const unbeatableAI = (() => {
         aiThinking,
     };
 })();
-
 
 // AI module
 const easyAI = (() => {
