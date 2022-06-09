@@ -1,3 +1,4 @@
+/* Setup */
 * {
     margin: 0;
     padding: 0;
@@ -5,6 +6,16 @@
 
 html {
     font-family: "Permanent Marker", cursive;
+}
+
+a {
+    color:#fff;
+}
+
+button {
+    display: block;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
 }
 
 body {
@@ -16,10 +27,17 @@ body {
     height: 100vh;
 }
 
+/* Character select modal */
 .characterSetup {
     display: flex;
     justify-content: space-evenly;
     width: 100%;
+}
+
+.humanSetup,
+.aiSetup {
+    text-align: center;
+    width: 50%;
 }
 
 input[type="radio"] {
@@ -36,37 +54,6 @@ input[name="aiChoice"]:checked + label img {
     border-radius: 20%;
 }
 
-.icon {
-    margin: 0;
-    padding: 0;
-    border-radius: 20%;
-    background-color: rgba(136, 136, 136, 0.27);
-    margin: 10%;
-    width:75%;
-    height:auto;
-}
-
-.humanIcon:hover {
-    background-color: rgba(0, 255, 255, 0.6);
-}
-.aiIcon:hover {
-    background-color: rgba(255, 0, 0, 0.6);
-}
-
-label:hover+div {
-    visibility:visible;
-}
-
-input[name="aiChoice"]:checked+label+div {
-    visibility:visible;
-}
-
-.humanSetup,
-.aiSetup {
-    text-align: center;
-    width: 50%;
-}
-
 .humanIcons {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -77,8 +64,36 @@ input[name="aiChoice"]:checked+label+div {
     grid-auto-flow: column;
 }
 
+
+.icon {
+    margin: 0;
+    padding: 0;
+    border-radius: 20%;
+    background-color: rgba(136, 136, 136, 0.27);
+    margin: 10%;
+    width:75%;
+    height:auto;
+}
+
+
+.humanIcon:hover {
+    background-color: rgba(0, 255, 255, 0.6);
+}
+.aiIcon:hover {
+    background-color: rgba(255, 0, 0, 0.6);
+}
+
+
 .difficultyLabel {
     visibility:hidden;
+}
+
+label:hover+div {
+    visibility:visible;
+}
+
+input[name="aiChoice"]:checked+label+div {
+    visibility:visible;
 }
 
 .setupModal p {
@@ -86,7 +101,7 @@ input[name="aiChoice"]:checked+label+div {
     margin:1rem;
 }
 
-/* The Modal (background) */
+/* Victory Modal (background) */
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -100,7 +115,7 @@ input[name="aiChoice"]:checked+label+div {
     background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
-/* Modal Content/Box */
+/* Victory modal content/box */
 .modal-content {
     background-color: rgba(0, 46, 68, 0.769);
     color: white;
@@ -128,6 +143,8 @@ input[name="aiChoice"]:checked+label+div {
     animation-duration: 1s;
 }
 
+
+/* Main body and gameboard */
 main {
     flex-grow: 1;
     display: flex;
@@ -190,12 +207,7 @@ main {
     width: 100%;
 }
 
-button {
-    display: block;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-}
-
+/* Header and footer */
 header,
 footer {
     color: aliceblue;
@@ -230,13 +242,12 @@ footer {
     text-shadow: 0 0 10px #fff, 0 0 20px #0ff;
 }
 
-a {
-    color:#fff;
-}
-
 footer p {
     padding: 1rem;
 }
+
+
+/* Responsive media queries */
 
 @media (min-width: 1080px) {
     .board {
