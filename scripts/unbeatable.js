@@ -258,7 +258,8 @@ const gameBoard = (() => {
             if (
                 game.turn == true &&
                 cell.textContent == "" &&
-                unbeatableAI.aiThinking == false
+                unbeatableAI.aiThinking == false &&
+                easyAI.aiThinking == false
             ) {
                 console.log("Human plays on cell " + cell.id);
                 gameBoard.currentBoard[cell.id - 1] = setup.human.sign;
@@ -285,21 +286,26 @@ const gameBoard = (() => {
                 // if no terminal state, proceed to AI turn
                 else {
                     game.switchTurn();
+                    if (setup.ai.name=="easy") {
+                        easyAI.aiPlay();
+                    }
+                    else {
                     unbeatableAI.aiPlay();
+                    }
                 }
             }
             // ai turn
             else if (
                 game.turn == false &&
                 cell.textContent == "" &&
-                unbeatableAI.aiThinking == false
+                unbeatableAI.aiThinking == false &&
+                easyAI.aiThinking == false
             ) {
                 console.log("AI plays on cell " + cell.id);
                 gameBoard.currentBoard[cell.id - 1] = setup.ai.sign;
                 // console.log(gameBoard.currentBoard);
                 cell.textContent = setup.ai.sign;
                 cell.style.backgroundImage = "url('" + setup.ai.src + "')";
-                cell.style.backgroundOpacity = 0.2;
                 cell.classList.remove("blueCell");
                 cell.classList.add("redCell");
                 // check for terminal state
@@ -412,6 +418,32 @@ const unbeatableAI = (() => {
                 }
             }
             return moves[bestMove];
+        }
+    };
+
+    return {
+        aiPlay,
+        aiThinking,
+    };
+})();
+
+
+// AI module
+const easyAI = (() => {
+    let aiThinking = false;
+    const aiPlay = () => {
+        // create an array of all remaining empty cells
+        const emptyCells = gameBoard.cellArray.filter(
+            (n) => n.textContent == ""
+        );
+        // pick a random cell from emptyCells array and click it
+        const aiPick = Math.floor(Math.random() * emptyCells.length);
+        if (game.turn == false && game.gameOver == false) {
+            easyAI.aiThinking = true;
+            setTimeout(function () {
+                easyAI.aiThinking = false;
+                emptyCells[aiPick].click();
+            }, 750);
         }
     };
 
