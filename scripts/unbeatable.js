@@ -20,7 +20,19 @@ const setup = (() => {
     setupModal.style.display = "block";
 
     const startGame = document.getElementById("start");
+
+    function atLeastOneHuman() {
+        return (document.querySelectorAll('input[name="humanChoice"]:checked')
+        .length > 0);
+    }
+
+    function atLeastOneAI() {
+        return (document.querySelectorAll('input[name="aiChoice"]:checked')
+        .length > 0);
+    }
+
     startGame.addEventListener("click", () => {
+        if (atLeastOneHuman()==true && atLeastOneAI()==true) {
         setupModal.style.display = "none";
 
         const possiblePlayers = [
@@ -91,8 +103,7 @@ const setup = (() => {
 
         setup.ai = playerFactory(aiName, aiSign, aiMessage, aiSrc);
         scoreBoardNames();
-    });
-
+    }});
     // scoreboard and win counters
     const scoreBoardNames = () => {
         const scoreNames = document.getElementsByClassName("scoreName");
