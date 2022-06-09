@@ -81,6 +81,11 @@ input[name="aiChoice"]:checked+label+div {
     visibility:hidden;
 }
 
+.setupModal p {
+    font-size:0.8rem;
+    margin:1rem;
+}
+
 /* The Modal (background) */
 .modal {
     display: none; /* Hidden by default */
