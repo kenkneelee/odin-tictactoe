@@ -8,16 +8,14 @@ const playerFactory = function (name, sign, winMsg, src) {
     return { name, sign, wins, src, sayHello };
 };
 
-// IIFE to setup players and difficulty
-
+// module to setup players and difficulty=============
 const setup = (() => {
-    // Initialize default players
+    // Initialize default placeholder players
     const human = playerFactory("Human", "X", "Human wins.");
     const ai = playerFactory("AI", "O", "AI wins.");
 
     // Define initial startup modal and its elements
     const setupModal = document.getElementById("setupModal");
-    const setupModalContent = document.querySelector(".setupModal-content");
     setupModal.style.display = "block";
     const startGame = document.getElementById("start");
 
@@ -78,26 +76,19 @@ const setup = (() => {
                     src: "images/icons8-darth-vader.svg",
                 },
             ];
-            // initialize human player object
+            // initialize human player object from selection
             const humanObject = possiblePlayers.find(
                 (player) =>
                     player.name ==
                     document.querySelector('input[name="humanChoice"]:checked')
                         .value
             );
-            console.log(humanObject);
-
-            const humanName = humanObject.name;
-            const humanSign = humanObject.sign;
-            const humanMessage = humanObject.winMessage;
-            const humanSrc = humanObject.src;
-
             // redefine human player object
             setup.human = playerFactory(
-                humanName,
-                humanSign,
-                humanMessage,
-                humanSrc
+                humanObject.name,
+                humanObject.sign,
+                humanObject.winMessage,
+                humanObject.src
             );
 
             // initialize ai player object
@@ -107,18 +98,19 @@ const setup = (() => {
                     document.querySelector('input[name="aiChoice"]:checked')
                         .value
             );
-            console.log(aiObject);
-            const aiName = aiObject.name;
-            const aiSign = aiObject.sign;
-            const aiMessage = aiObject.winMessage;
-            const aiSrc = aiObject.src;
-
             //  redefine ai player object
-            setup.ai = playerFactory(aiName, aiSign, aiMessage, aiSrc);
+            setup.ai = playerFactory(
+                aiObject.name,
+                aiObject.sign, 
+                aiObject.winMessage, 
+                aiObject.src);
+
+            // setup scoreboard with chosen characters' names
             scoreBoardNames();
         }
     });
-    // scoreboard and win counters
+
+    // function to initialize scoreboard and win counters
     const scoreBoardNames = () => {
         const scoreNames = document.getElementsByClassName("scoreName");
         scoreNames[0].textContent = setup.human.name + ":";
@@ -131,7 +123,7 @@ const setup = (() => {
     };
 })();
 
-// game module======================================
+// game module ======================================
 const game = (() => {
     // store whether game is over
     let gameOver = false;
@@ -160,6 +152,8 @@ const game = (() => {
     thinkingText.textContent = "thinking";
 
     const winCounters = document.getElementsByClassName("winCounter");
+
+    // update scoreboard counter
     const updateWins = () => {
         winCounters[0].textContent = setup.human.wins;
         winCounters[1].textContent = setup.ai.wins;
@@ -182,7 +176,6 @@ const game = (() => {
     const winMsg = document.getElementById("winnerMsg");
 
     const winnerStuff = (roundWinner) => {
-        console.log(roundWinner.name + " wins!");
         gameWinner.textContent = roundWinner.name;
         winMsg.textContent = '"' + roundWinner.sayHello() + '"';
         modalContent.classList.add("modal-content-active");
@@ -194,7 +187,6 @@ const game = (() => {
 
     // function to declare a round tie, pop up the modal
     const tieStuff = () => {
-        console.log("Tie!");
         gameWinner.textContent = "Nobody";
         modalContent.classList.add("modal-content-active");
         winMsg.textContent = "";
@@ -286,9 +278,7 @@ const gameBoard = (() => {
                 unbeatableAI.aiThinking == false &&
                 easyAI.aiThinking == false
             ) {
-                console.log("Human plays on cell " + cell.id);
                 gameBoard.currentBoard[cell.id - 1] = setup.human.sign;
-                // console.log(gameBoard.currentBoard);
                 cell.textContent = setup.human.sign;
                 cell.style.backgroundImage = "url('" + setup.human.src + "')";
                 cell.classList.remove("redCell");
@@ -311,6 +301,7 @@ const gameBoard = (() => {
                 // if no terminal state, proceed to AI turn
                 else {
                     game.switchTurn();
+                    // make AI move based on difficulty selection
                     if (setup.ai.name == "Easy AI") {
                         easyAI.aiPlay();
                     } else {
@@ -325,9 +316,7 @@ const gameBoard = (() => {
                 unbeatableAI.aiThinking == false &&
                 easyAI.aiThinking == false
             ) {
-                console.log("AI plays on cell " + cell.id);
                 gameBoard.currentBoard[cell.id - 1] = setup.ai.sign;
-                // console.log(gameBoard.currentBoard);
                 cell.textContent = setup.ai.sign;
                 cell.style.backgroundImage = "url('" + setup.ai.src + "')";
                 cell.classList.remove("blueCell");
@@ -363,7 +352,6 @@ const unbeatableAI = (() => {
     const aiPlay = () => {
         originalBoard = gameBoard.currentBoard;
         bestSpot = minimax(originalBoard, setup.ai);
-        console.log(bestSpot);
 
         if (game.turn == false && game.gameOver == false) {
             unbeatableAI.aiThinking = true;
@@ -387,7 +375,6 @@ const unbeatableAI = (() => {
                 }
                 return spots;
             };
-            // console.log ("available spots are");
             const availSpots = availSpotsCheck(newBoard);
             // human is minimizing player / endstate
             if (game.checkWin(newBoard, setup.human)) {
@@ -451,7 +438,7 @@ const unbeatableAI = (() => {
     };
 })();
 
-// AI module
+// Easy AI module
 const easyAI = (() => {
     let aiThinking = false;
     const aiPlay = () => {
