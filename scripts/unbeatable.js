@@ -11,23 +11,23 @@ const playerFactory = function (name, sign, winMsg, src) {
 // IIFE to setup players and difficulty
 
 const setup = (() => {
+    // Initialize default players
     const human = playerFactory("Human", "X", "Human wins.");
     const ai = playerFactory("AI", "O", "AI wins.");
 
+    // Define initial startup modal and its elements
     const setupModal = document.getElementById("setupModal");
     const setupModalContent = document.querySelector(".setupModal-content");
-
     setupModal.style.display = "block";
-
     const startGame = document.getElementById("start");
 
+    // Functions to verify selections have been made
     function atLeastOneHuman() {
         return (
             document.querySelectorAll('input[name="humanChoice"]:checked')
                 .length > 0
         );
     }
-
     function atLeastOneAI() {
         return (
             document.querySelectorAll('input[name="aiChoice"]:checked').length >
@@ -35,6 +35,7 @@ const setup = (() => {
         );
     }
 
+    // Start game button enabled if required fields completed
     startGame.addEventListener("click", () => {
         if (atLeastOneHuman() == true && atLeastOneAI() == true) {
             setupModal.style.display = "none";
@@ -56,7 +57,7 @@ const setup = (() => {
                     name: "R2D2",
                     sign: "X",
                     winMessage: "Beep beep boop boop!",
-                    src: "images/icons8-r2d2.svg",
+                    src: "images/icons8-r2-d2.svg",
                 },
                 {
                     name: "C-3PO",
@@ -91,6 +92,7 @@ const setup = (() => {
             const humanMessage = humanObject.winMessage;
             const humanSrc = humanObject.src;
 
+            // redefine human player object
             setup.human = playerFactory(
                 humanName,
                 humanSign,
@@ -111,6 +113,7 @@ const setup = (() => {
             const aiMessage = aiObject.winMessage;
             const aiSrc = aiObject.src;
 
+            //  redefine ai player object
             setup.ai = playerFactory(aiName, aiSign, aiMessage, aiSrc);
             scoreBoardNames();
         }
