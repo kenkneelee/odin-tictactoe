@@ -51,6 +51,14 @@ input[name="aiChoice"]:checked + label img {
     background-color: rgba(255, 0, 0, 0.6);
 }
 
+label:hover+div {
+    visibility:visible;
+}
+
+input[name="aiChoice"]:checked+label+div {
+    visibility:visible;
+}
+
 .humanSetup,
 .aiSetup {
     text-align: center;
@@ -61,6 +69,14 @@ input[name="aiChoice"]:checked + label img {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
+}
+
+.aiIcons {
+    grid-auto-flow: column;
+}
+
+.difficultyLabel {
+    visibility:hidden;
 }
 
 /* The Modal (background) */

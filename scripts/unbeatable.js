@@ -61,13 +61,13 @@ const setup = (() => {
                 src:"images/stone-spear.svg",
             },
             {
-                name: "easy",
+                name: "Easy AI",
                 sign: "O",
                 winMessage: "Waaaaaaa!!",
                 src:"images/baby-face-bg.svg",
             },
             {
-                name: "impossible",
+                name: "Unbeatable AI",
                 sign: "O",
                 winMessage: "The unbeatable AI prevails yet again!",
                 src:"images/skull-crossed-bones-bg.svg",
