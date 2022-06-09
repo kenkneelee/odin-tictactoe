@@ -297,7 +297,7 @@ const gameBoard = (() => {
                 // if no terminal state, proceed to AI turn
                 else {
                     game.switchTurn();
-                    if (setup.ai.name=="easy") {
+                    if (setup.ai.name=="Easy AI") {
                         easyAI.aiPlay();
                     }
                     else {
